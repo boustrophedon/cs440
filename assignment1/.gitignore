@@ -100,3 +100,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+# Pygame headers installed via pip
+include/
+
+# f2py installed via pip for scipy or numpy
+bin/f2py
