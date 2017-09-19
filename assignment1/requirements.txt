@@ -1,3 +1,4 @@
+docopt==0.6.2
 numpy==1.13.1
 pygame==1.9.3
 scipy==0.19.1
