@@ -1,4 +1,5 @@
 import numpy
+import random
 
 # A Grid class which holds a numpy array representing a 2D square grid with
 # integer values. The values in this class have no semantic meaning.
@@ -43,17 +44,25 @@ class Grid:
 			out.append(" ".join(line))
 		return "\n".join(out)
 
+
 # this is not actually useful for our project currently with the semantics of
 # Grid. the random puzzles we want have semantics regarding which values are
 # valid.
 def random_grid(size):
-	pass
+    result = Grid(size)
+    n = result.array.shape[0]
+    for x in range(0, n):
+        for y in range(0, n):
+            result.array[x][y] = random.randint(1, numpy.amax([n - x, x - n]))
+    result.array[n - 1][n - 1] = 0
+    return result
+
 
 # Create a grid object from a file of a grid represented with the elements
 # separated by spaces and each row separated by a newline
 def grid_from_file(file_name):
 	array = None
-
+    
 	with open(file_name) as f:
 		# read first line and determine shape
 		lines = f.readlines()
