@@ -26,9 +26,6 @@ class PuzzleRunner:
 
 		self.gui = GridGui(self.puzzle)
 
-		self.gui.register_new(self.do_new_puzzle)
-
-
 	def do_new_puzzle(self, size):
 		# make a PuzzleGenerator, take resulting puzzle and assign it to
 		# self.puzzle
@@ -37,7 +34,9 @@ class PuzzleRunner:
 	
 def main():
 	arguments = docopt(__doc__, version="Assignment 1")
-	print(arguments)
+	if arguments["display"]:
+		puzzle = PuzzleRunner(arguments["<file>"])
+		print(puzzle.puzzle)
 
 if __name__ == '__main__':
 	main()
