@@ -1,3 +1,4 @@
+import copy
 import random
 
 import numpy
@@ -19,7 +20,7 @@ class PuzzleGrid:
 		self.grid = grid
 
 		self.adj_graph = graphize(self.grid)
-		self.value, self.distances = self._evaluate()
+		self._value, self._distances = self._evaluate()
 
 	@classmethod
 	def from_file(cls, input_file):
@@ -64,23 +65,27 @@ class PuzzleGrid:
 		y = random.randint(0, self.size()-1)
 
 		self.grid[x,y] = self.get_random_value(x, y)
-		self.value, self.distances = self._evaluate()
+		self._value, self._distances = self._evaluate()
 		return (x,y)
 
 	# Returns the value of the grid puzzle at point (x,y)
 	def get(self, x, y):
 		return self.grid.get(x,y)
 
+	# Returns a copy of the underlying Grid object
+	def clone_grid(self):
+		return copy.deepcopy(self.grid)
+
 	def size(self):
 		return self.grid.size()
 
 	def value(self):
-		return self.value
+		return self._value
 
 	# Returns a grid with each element's value representing the distance from
 	# the start
 	def distances(self):
-		return self.distances
+		return self._distances
 
 	# Returns a tuple of the value and a grid with elements representing the
 	# number of moves it takes to reach that position in the original puzzle
@@ -104,8 +109,8 @@ class PuzzleGrid:
 
 		out.append(str(self.grid))
 		
-		out.append(str(self.distances))
-		out.append(str(self.value))
+		out.append(str(self.distances()))
+		out.append(str(self.value()))
 
 		return "\n\n".join(out)
 
