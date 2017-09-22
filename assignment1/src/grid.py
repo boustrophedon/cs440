@@ -45,18 +45,6 @@ class Grid:
 		return "\n".join(out)
 
 
-# this is not actually useful for our project currently with the semantics of
-# Grid. the random puzzles we want have semantics regarding which values are
-# valid.
-def random_grid(size):
-    result = Grid(size)
-    n = result.array.shape[0]
-    for x in range(0, n):
-        for y in range(0, n):
-            result.array[x][y] = random.randint(1, numpy.amax([n - x, x - n]))
-    result.array[n - 1][n - 1] = 0
-    return result
-
 
 # Create a grid object from a file of a grid represented with the elements
 # separated by spaces and each row separated by a newline
