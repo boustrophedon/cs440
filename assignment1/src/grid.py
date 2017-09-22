@@ -9,6 +9,29 @@ class Grid:
 		assert(array.shape[0] == array.shape[1])
 		self.array = array
 
+	# Create a grid object from a file of a grid with the following representation:
+	# An integer representing the size of the grid followed by a newline
+	# The rows of the grid separated by newlines, with each element of the row
+	# separated by a space
+	@classmethod
+	def grid_from_file(cls, file_name):
+		array = None
+		
+		with open(file_name) as f:
+			# read first line and determine shape
+			lines = f.readlines()
+			size = int(lines[0].strip())
+
+			shape = (size, size)
+			array = numpy.empty(shape, dtype=int)
+
+			for (row,line) in enumerate(lines[1:]):
+				line = line.strip().split(' ')
+				line = [int(x) for x in line]
+				array[row] = line
+
+		return cls(array)
+
 	def get(self, x, y):
 		return self.array[x,y]
 
@@ -46,25 +69,5 @@ class Grid:
 
 
 
-# Create a grid object from a file of a grid represented with the elements
-# separated by spaces and each row separated by a newline
-def grid_from_file(file_name):
-	array = None
-    
-	with open(file_name) as f:
-		# read first line and determine shape
-		lines = f.readlines()
-		first = lines[0].strip().split(' ')
-		size = len(first)
-
-		shape = (size, size)
-		array = numpy.empty(shape, dtype=int)
-
-		for (row,line) in enumerate(lines):
-			line = line.strip().split(' ')
-			line = [int(x) for x in line]
-			array[row] = line
-
-	return Grid(array)
 
 

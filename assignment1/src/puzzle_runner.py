@@ -24,7 +24,7 @@ from generators import *
 
 class PuzzleRunner:
 	def __init__(self, input_file=None):
-		self.puzzle = PuzzleGrid(input_file=input_file)
+		self.puzzle = PuzzleGrid.from_file(input_file)
 
 		self.gui = GridGui(self.puzzle)
 

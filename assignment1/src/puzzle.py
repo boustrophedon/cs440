@@ -4,38 +4,68 @@ import numpy
 import scipy
 import scipy.sparse
 
-from grid import Grid, grid_from_file
-
-def random_puzzle(size):
-	result = numpy.empty((size, size), dtype=int)
-
-	n = size
-	for x in range(0, n):
-		for y in range(0, n):
-			result[x,y] = random.randint(1, numpy.amax([n - x, x - n]))
-	result[n - 1, n - 1] = 0
-	return PuzzleGrid(grid=Grid(result))
+from grid import Grid
 
 class PuzzleGrid:
-	# If size is passed, generate a random puzzle of size `size`
-	# If input_file is passed, read in a puzzle from the given file
+	# Input: grid, an instance of Grid that represents a puzzle
 	#
 	# self.grid is a Grid with values representing how many squares in the
 	# cardinal directions we can move
 	# 
 	# self.adj_graph is a sparse scipy matrix representing the graph formed by
 	# the possible moves of the grid
-	def __init__(self, grid=None, input_file=None):
-		if input_file is not None:
-			self.grid = grid_from_file(input_file)
-		elif grid is not None:
-			# Todo: validate grid
-			self.grid = grid
-		else:
-			raise ValueError("One of grid or input_file is a required parameter")
+	def __init__(self, grid):
+		# Todo: validate grid
+		self.grid = grid
 
 		self.adj_graph = graphize(self.grid)
 		self.value, self.distances = self._evaluate()
+
+	@classmethod
+	def from_file(cls, input_file):
+		grid = Grid.grid_from_file(input_file)
+		return cls(grid)
+
+	@classmethod
+	def random_puzzle(cls, size):
+		result = numpy.empty((size, size), dtype=int)
+
+		n = size
+		for x in range(0, n):
+			for y in range(0, n):
+				result[x,y] = cls._get_random_value(n, x, y)
+		result[n - 1, n - 1] = 0
+		return cls(Grid(result))
+
+	# Given an x and y coordinate on the grid, return a random value for the
+	# puzzle that is valid at that coordinate
+	def get_random_value(self, x, y):
+		return PuzzleGrid._get_random_value(self.size(), x, y)
+
+	@staticmethod
+	def _get_random_value(n, x, y):
+		assert(0 <= x < n)
+		assert(0 <= y < n)
+		# n - x - 1 is the distance to the right edge
+		# x's range is [0,(n-1)], so if x == n-1 then n - x = 1 and we
+		# technically want to be able to reach 0 (though in actuality we do not ever accept 0)
+		#
+		# x is the distance to the left edge
+		xdiff = max(n - x - 1, x)
+		# same reasoning for y coordinate
+		ydiff = max(n - y - 1, y)
+		return random.randint(1, max(xdiff, ydiff))
+
+	# Changes one element of the grid to a valid value at random
+	#
+	# Returns the coordinate of the element that was changed
+	def change_random_entry(self):
+		x = random.randint(0, self.size()-1)
+		y = random.randint(0, self.size()-1)
+
+		self.grid[x,y] = self.get_random_value(x, y)
+		self.value, self.distances = self._evaluate()
+		return (x,y)
 
 	# Returns the value of the grid puzzle at point (x,y)
 	def get(self, x, y):
