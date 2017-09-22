@@ -1,5 +1,5 @@
-from ..grid import Grid
+from grid import Grid
 
 class SimulatedAnnealingGenerator:
-	def __init__(self, size, iters, start_t, decay_rate):
+	def __init__(self, size, iters, start_temp, decay_rate):
 		pass

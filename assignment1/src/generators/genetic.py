@@ -1,5 +1,5 @@
-from ..grid import Grid
+from grid import Grid
 
 class GeneticGenerator:
-	def __init__(self, size, iters, population):
+	def __init__(self, size, iters, population_size):
 		pass
