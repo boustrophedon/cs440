@@ -4,7 +4,15 @@ import scipy.sparse
 
 from grid import Grid, grid_from_file
 
-DEFAULT_SIZE = 5
+def random_puzzle(size):
+	result = numpy.empty((size, size), dtype=int)
+
+	n = size
+	for x in range(0, n):
+		for y in range(0, n):
+			result[x,y] = random.randint(1, numpy.amax([n - x, x - n]))
+	result[n - 1, n - 1] = 0
+	return PuzzleGrid(grid=Grid(result))
 
 class PuzzleGrid:
 	# If size is passed, generate a random puzzle of size `size`
@@ -15,12 +23,14 @@ class PuzzleGrid:
 	# 
 	# self.adj_graph is a sparse scipy matrix representing the graph formed by
 	# the possible moves of the grid
-	def __init__(self, size=DEFAULT_SIZE, input_file=None):
-		if input_file is None:
-			self.grid = self.random_grid(size)
-		else:
+	def __init__(self, grid=None, input_file=None):
+		if input_file is not None:
 			self.grid = grid_from_file(input_file)
+		elif grid is not None:
 			# Todo: validate grid
+			self.grid = grid
+		else:
+			raise ValueError("One of grid or input_file is a required parameter")
 
 		self.adj_graph = graphize(self.grid)
 		self.value, self.distances = self._evaluate()
@@ -34,16 +44,6 @@ class PuzzleGrid:
 
 	def value(self):
 		return self.value
-
-	def random_grid(self, size):
-		result = numpy.empty((size, size), dtype=int)
-
-		n = size
-		for x in range(0, n):
-			for y in range(0, n):
-				result[x,y] = random.randint(1, numpy.amax([n - x, x - n]))
-		result[n - 1, n - 1] = 0
-		return Grid(result)
 
 	# Returns a grid with each element's value representing the distance from
 	# the start
