@@ -66,8 +66,3 @@ class Grid:
 				line.append(v)
 			out.append(" ".join(line))
 		return "\n".join(out)
-
-
-
-
-
