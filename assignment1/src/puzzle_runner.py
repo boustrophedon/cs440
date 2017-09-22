@@ -43,8 +43,11 @@ def main():
 		size = int(arguments["<size>"])
 		iters = int(arguments["<iters>"])
 
+		output = None
 		if arguments["hill-climbing"]:
-			gen = HillClimbingGenerator(size, iters)
+			gen = HillClimbingGenerator(size)
+
+			output = gen.generate(iters)
 		elif arguments["random-restarts"]:
 			restarts = int(arguments["<restarts>"])
 
