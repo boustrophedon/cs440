@@ -115,16 +115,12 @@ class TkinterGUI(Frame):
         f.close()  # `()` was missing.
 
 
-if __name__ == "__main__":
+def do_gui(puzzle):
     root = Tk()
     root.geometry("600x700")
     text = Text(root)
 
-    # root.mainloop()
-    # a = np.ndarray((11, 11), dtype=int)
-
-    p = PuzzleGrid.random_puzzle(11)
-    ex = TkinterGUI(p)
+    ex = TkinterGUI(puzzle)
 
     #ex.draw_square(30, 30, 5)
     ex.draw_puzzle()

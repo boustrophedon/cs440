@@ -1,7 +1,7 @@
 """Grid puzzle for CS440 assignment 1. 
 
 Usage:
-  puzzle_runner.py display <file>
+  puzzle_runner.py display [--gui] <file>
   puzzle_runner.py generate [-o <file>] hill-climbing <size> <iters>
   puzzle_runner.py generate [-o <file>] random-restarts <size> <iters> <restarts>
   puzzle_runner.py generate [-o <file>] random-walk <size> <iters> <p>
@@ -17,28 +17,28 @@ Options:
 """
 from docopt import docopt
 
-from gui import GridGui
+from tkinter_gui import do_gui
 from puzzle import PuzzleGrid
 
 from generators import *
 
 class PuzzleRunner:
-	def __init__(self, input_file=None):
-		self.puzzle = PuzzleGrid.from_file(input_file)
+	def __init__(self, input_file=None, gui=False):
+		if input_file is not None:
+			self.puzzle = PuzzleGrid.from_file(input_file)
+		else:
+			self.puzzle = PuzzleGrid.random_grid(11)
 
-		self.gui = GridGui(self.puzzle)
-
-	def do_new_puzzle(self, size):
-		# make a PuzzleGenerator, take resulting puzzle and assign it to
-		# self.puzzle
-		pass
-
+		if gui:
+			self.gui = do_gui(self.puzzle)
+		else:
+			print(self.puzzle)
 	
 def main():
 	arguments = docopt(__doc__, version="Assignment 1")
 	if arguments["display"]:
-		puzzle = PuzzleRunner(arguments["<file>"])
-		print(puzzle.puzzle)
+		PuzzleRunner(arguments["<file>"], arguments["--gui"])
+
 	elif arguments["generate"]:
 		size = int(arguments["<size>"])
 		iters = int(arguments["<iters>"])
