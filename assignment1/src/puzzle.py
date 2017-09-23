@@ -62,8 +62,13 @@ class PuzzleGrid:
 	# Returns the coordinate of the element that was changed, and the previous
 	# value at that coordinate
 	def change_random_entry(self):
-		x = random.randint(0, self.size()-1)
-		y = random.randint(0, self.size()-1)
+		size = self.size()
+		x = size-1
+		y = size-1
+		# (size-1, size-1) is the goal state, which we do not want to change
+		while (x == size-1 and y == size-1):
+			x = random.randint(0, size-1)
+			y = random.randint(0, size-1)
 		old = self.get(x,y)
 
 		self.set(x,y, self.get_random_value(x, y))
