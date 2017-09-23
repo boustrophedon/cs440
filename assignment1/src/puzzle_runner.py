@@ -71,7 +71,8 @@ def main():
 			start_temp = float(arguments["<start_temp>"])
 			decay_rate = float(arguments["<decay_rate>"])
 
-			gen = SimulatedAnnealingGenerator(size, iters, start_temp, decay_rate)
+			gen = SimulatedAnnealingGenerator(size)
+			output = gen.generate(iters, start_temp, decay_rate)
 		elif arguments["genetic"]:
 			population_size = int(arguments["<pop_size>"])
 			if not population_size > 0:
