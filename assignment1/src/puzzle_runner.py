@@ -51,7 +51,8 @@ def main():
 		elif arguments["random-restarts"]:
 			restarts = int(arguments["<restarts>"])
 
-			gen = RandomRestartsGenerator(size, iters, restarts)
+			gen = RandomRestartsGenerator(size)
+			output = gen.generate(iters, restarts)
 		elif arguments["random-walk"]:
 			p = float(arguments["<p>"])
 
