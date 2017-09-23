@@ -1,7 +1,7 @@
 """Grid puzzle for CS440 assignment 1. 
 
 Usage:
-  puzzle_runner.py display [--gui] <file>
+  puzzle_runner.py display [--gui] [<file>]
   puzzle_runner.py generate [-o <file>] hill-climbing <size> <iters>
   puzzle_runner.py generate [-o <file>] random-restarts <size> <iters> <restarts>
   puzzle_runner.py generate [-o <file>] random-walk <size> <iters> <p>
@@ -27,7 +27,7 @@ class PuzzleRunner:
 		if input_file is not None:
 			self.puzzle = PuzzleGrid.from_file(input_file)
 		else:
-			self.puzzle = PuzzleGrid.random_grid(11)
+			self.puzzle = PuzzleGrid.random_puzzle(11)
 
 		if gui:
 			self.gui = do_gui(self.puzzle)
