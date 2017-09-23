@@ -33,10 +33,10 @@ class Grid:
 		return cls(array)
 
 	def get(self, x, y):
-		return self.array[x,y]
+		return self.array[y,x]
 
 	def set(self, x, y, value):
-		self.array[x,y] = value
+		self.array[y,x] = value
 
 	def size(self):
 		return self.array.shape[0]

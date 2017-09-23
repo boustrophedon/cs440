@@ -20,7 +20,7 @@ class PuzzleGrid:
 		self.grid = grid
 
 		self.adj_graph = graphize(self.grid)
-		self._value, self._distances = self._evaluate()
+		self.do_evaluate()
 
 	@classmethod
 	def from_file(cls, input_file):
@@ -59,18 +59,36 @@ class PuzzleGrid:
 
 	# Changes one element of the grid to a valid value at random
 	#
-	# Returns the coordinate of the element that was changed
+	# Returns the coordinate of the element that was changed, and the previous
+	# value at that coordinate
 	def change_random_entry(self):
 		x = random.randint(0, self.size()-1)
 		y = random.randint(0, self.size()-1)
+		old = self.get(x,y)
 
-		self.grid[x,y] = self.get_random_value(x, y)
-		self._value, self._distances = self._evaluate()
-		return (x,y)
+		self.set(x,y, self.get_random_value(x, y))
+		self.do_evaluate()
+		return (x,y,old)
 
 	# Returns the value of the grid puzzle at point (x,y)
 	def get(self, x, y):
 		return self.grid.get(x,y)
+
+	# Sets the entry of the grid puzzle at point (x,y) to val
+	# If you are going to change a lot of the grid's elements before looking at
+	# the puzzle's value, consider cloning the grid and making a new PuzzleGrid
+	def set(self, x, y, val):
+		n = self.size()
+		xdiff = max(n - x - 1, x)
+		ydiff = max(n - y - 1, y)
+		if val > max(xdiff, ydiff) or val <= 0:
+			raise ValueError("Invalid puzzle entry at ({}, {}): {}", x, y, val)
+
+		self.grid[x,y] = val
+		
+		# Fix up adjacency graph and recompute distances/values
+		set_neighbors(self.grid, self.adj_graph, x, y, n)
+		self.do_evaluate()
 
 	# Returns a copy of the underlying Grid object
 	def clone_grid(self):
@@ -86,6 +104,11 @@ class PuzzleGrid:
 	# the start
 	def distances(self):
 		return self._distances
+
+	# Note that this does not fix the adjacency matrix if you messed with the
+	# internal structure of the grid without using set or __set__
+	def do_evaluate(self):
+		self._value, self._distances = self._evaluate()
 
 	# Returns a tuple of the value and a grid with elements representing the
 	# number of moves it takes to reach that position in the original puzzle
@@ -103,6 +126,14 @@ class PuzzleGrid:
 		else:
 			unreachable = -(distances == -1).sum()
 			return (unreachable, dist_grid)
+
+	def __getitem__(self, idx):
+		assert(len(idx) == 2)
+		return self.get(idx[0], idx[1])
+
+	def __setitem__(self, idx, val):
+		assert(len(idx) == 2)
+		self.set(idx[0], idx[1], val)
 
 	def __str__(self):
 		out = list()
@@ -123,27 +154,28 @@ def graphize(grid):
 	adj = scipy.sparse.lil_matrix((size, size))
 
 	# adjacency matrix for graph we create has indices in row major order
-	for row in range(0, n):
-		for col in range(0, n):
-			adj_ind = col*n + row
-
-			# col, row is correct here: x value is the column y
-			# value is the row. I probably should change the whole
-			# thing tbh
-			offset = grid[col, row]
-			
-			if row-offset >= 0:
-				adj_ind2 = col*n + (row-offset)
-				adj[adj_ind, adj_ind2] = 1
-			if row+offset < n:
-				adj_ind2 = col*n + (row+offset)
-				adj[adj_ind, adj_ind2] = 1
-
-			if col-offset >= 0:
-				adj_ind2 = (col-offset)*n + row
-				adj[adj_ind, adj_ind2] = 1
-			if col+offset < n:
-				adj_ind2 = (col+offset)*n + row
-				adj[adj_ind, adj_ind2] = 1
+	for x in range(0, n):
+		for y in range(0, n):
+			set_neighbors(grid, adj, x, y, n)
 
 	return adj
+
+def set_neighbors(grid, graph, x, y, n):
+	idx = y*n + x
+	graph[idx] = 0
+
+	offset = grid[x, y]
+	
+	if x-offset >= 0:
+		idx2 = y*n + (x-offset)
+		graph[idx, idx2] = 1
+	if x+offset < n:
+		idx2 = y*n + (x+offset)
+		graph[idx, idx2] = 1
+
+	if y-offset >= 0:
+		idx2 = (y-offset)*n + x
+		graph[idx, idx2] = 1
+	if y+offset < n:
+		idx2 = (y+offset)*n + x
+		graph[idx, idx2] = 1

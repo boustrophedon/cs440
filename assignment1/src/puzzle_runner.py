@@ -63,5 +63,12 @@ def main():
 
 			gen = GeneticGenerator(size, iters, population_size)
 
+		if arguments["--output"]:
+			with open(arguments["--output"], "w") as f:
+				f.write(str(output[0].size()) + "\n" + str(output[0]))
+		else:
+			# display the puzzle with the gui, i.e. don't do this
+			print(str(output[0]) + "\n" + str(output[1]))
+
 if __name__ == '__main__':
 	main()
