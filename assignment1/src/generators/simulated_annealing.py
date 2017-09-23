@@ -23,7 +23,7 @@ class SimulatedAnnealingGenerator:
 			if temp < 0.00001:
 				break
 			# if new_value > old_value or random.uniform(0, 1) < acceptance_prob:
-			if new_value <= old_value or random.uniform(0, 1) < acceptance_prob:
+			if new_value <= old_value or random.uniform(0, 1) >= acceptance_prob:
 
 				self.puzzle[x,y] = old
 				# probably not this
