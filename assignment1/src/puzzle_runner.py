@@ -55,8 +55,12 @@ def main():
 			output = gen.generate(iters, restarts)
 		elif arguments["random-walk"]:
 			p = float(arguments["<p>"])
+			if p > 1 or p < 0:
+				raise ValueError("The parameter p should be a probability between 0 and 1. Input: {}".format(p))
 
-			gen = RandomWalkGenerator(size, iters, p)
+			gen = RandomWalkGenerator(size)
+
+			output = gen.generate(iters, p)
 		elif arguments["annealing"]:
 			start_temp = float(arguments["<start_temp>"])
 			decay_rate = float(arguments["<decay_rate>"])
