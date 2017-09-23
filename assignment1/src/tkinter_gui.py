@@ -31,9 +31,9 @@ class TkinterGUI(Frame):
         self.solutionButton.place(x=25, y=620)
         self.originalButton = Button(self, text="Show original", command=self.draw_puzzle)
         self.originalButton.place(x=25, y=650)
-        openFileButton = Button(root, text="Open file...")
+        openFileButton = Button(self, text="Open file...", command=self.file_open)
         openFileButton.place(x=150, y=620)
-        saveFileButton = Button(self, text="Save to file", command=file_save)
+        saveFileButton = Button(self, text="Save to file", command=self.file_save)
         saveFileButton.place(x=150, y=650)
 
     def draw_square(self, x, y, n):
@@ -90,17 +90,28 @@ class TkinterGUI(Frame):
             starty += 55
 
 
-def file_save():
-    root.update()
-    filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", title="Save file as...")
-    if filename is '' or None:
-        return
-    f = open(filename)
+    def file_save(self):
+        root.update()
+        filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", title="Save file as...")
+        if filename is '' or None:
+            return
+        f = open(filename)
+        if f is None:  # asksaveasfile return `None` if dialog closed with "cancel".
+            return
+        # Write to file here
 
-    if f is None:  # asksaveasfile return `None` if dialog closed with "cancel".
-        return
-    # f.write(text2save)
-    f.close()  # `()` was missing.
+        f.close()
+
+
+    def file_open(self):
+        root.update()
+        filename = tk.filedialog.askopenfilename(defaultextension=".txt", title="Open grid/puzzle file")
+        if filename is '' or None:
+            return
+        f = open(filename)
+        # Load from file here
+        self.grid = Grid.grid_from_filename(filename)
+        f.close()  # `()` was missing.
 
 
 if __name__ == "__main__":
