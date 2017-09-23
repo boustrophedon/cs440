@@ -4,6 +4,7 @@ from tkinter.filedialog import askopenfilename
 from puzzle import PuzzleGrid
 from numpy import *
 import numpy as np
+from grid import Grid
 
 WEIRD_ORANGE= "#fb0"
 RED = "#f00"
@@ -71,7 +72,7 @@ class TkinterGUI(Frame):
     def draw_solution(self):
         oldstartx = startx = 25
         starty = 25
-        size = self.puzzle.grid.size()
+        size = self.puzzle.size()
         if size is 9:
             oldstartx = startx = 80
             starty = 80
@@ -84,7 +85,7 @@ class TkinterGUI(Frame):
         for i in range(0, size):
             for j in range(0, size):
                 # Command goes here
-                self.draw_square(x=startx, y=starty, n=self.puzzle.distances.get(i, j))
+                self.draw_square(x=startx, y=starty, n=self.puzzle.distances().get(i, j))
                 startx += 55
             startx = oldstartx
             starty += 55
@@ -120,9 +121,9 @@ if __name__ == "__main__":
     text = Text(root)
 
     # root.mainloop()
-    a = np.ndarray((11, 11), dtype=int)
+    # a = np.ndarray((11, 11), dtype=int)
 
-    p = PuzzleGrid(a)
+    p = PuzzleGrid.random_puzzle(11)
     ex = TkinterGUI(p)
 
     #ex.draw_square(30, 30, 5)
