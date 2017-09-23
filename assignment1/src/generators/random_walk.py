@@ -22,10 +22,9 @@ class RandomWalkGenerator:
 
 		for i in range(0, iters):
 			x,y,old = self.puzzle.change_random_entry()
-			# accept the bad move with probability p is the same as don't
-			# accept with probability 1-p, and since random.random() gives us a
-			# float in [0,1] this is correct
-			if self.puzzle.value() < prev and random.random() >= p:
+			# if we've made a bad move, then accepting with probability p is
+			# the same as not accepting with probability 1-p
+			if self.puzzle.value() < prev and random.random() < 1-p:
 				self.puzzle[x,y] = old
 			else:
 				prev = self.puzzle.value()
