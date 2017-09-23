@@ -21,4 +21,6 @@ class HillClimbingGenerator:
 			x,y,old = self.puzzle.change_random_entry()
 			if self.puzzle.value() < prev:
 				self.puzzle[x,y] = old
+			else:
+				prev = self.puzzle.value()
 		return (self.puzzle.clone_grid(), self.puzzle.value())

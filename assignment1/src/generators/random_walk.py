@@ -27,4 +27,6 @@ class RandomWalkGenerator:
 			# float in [0,1] this is correct
 			if self.puzzle.value() < prev and random.random() >= p:
 				self.puzzle[x,y] = old
+			else:
+				prev = self.puzzle.value()
 		return (self.puzzle.clone_grid(), self.puzzle.value())
