@@ -33,7 +33,7 @@ class TkinterGUI(Frame):
         self.originalButton.place(x=25, y=650)
         openFileButton = Button(root, text="Open file...")
         openFileButton.place(x=150, y=620)
-        saveFileButton = Button(root, text="Save to file", command=file_save())
+        saveFileButton = Button(self, text="Save to file", command=file_save)
         saveFileButton.place(x=150, y=650)
 
     def draw_square(self, x, y, n):
