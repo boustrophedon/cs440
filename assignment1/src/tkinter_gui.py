@@ -20,7 +20,8 @@ class TkinterGUI(Frame):
         super().__init__()
         self.initUI(puzzle)
 
-    def initUI(self, puzzle):
+    def initUI(self, puzzle, root):
+        self.root = root
         self.puzzle = puzzle
         self.master.title("Assignment 1")
         self.pack(fill = BOTH, expand = 1)
@@ -92,7 +93,7 @@ class TkinterGUI(Frame):
 
 
     def file_save(self):
-        root.update()
+        self.root.update()
         filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", title="Save file as...")
         if filename is '' or None:
             return
@@ -105,7 +106,7 @@ class TkinterGUI(Frame):
 
 
     def file_open(self):
-        root.update()
+        self.root.update()
         filename = tk.filedialog.askopenfilename(defaultextension=".txt", title="Open grid/puzzle file")
         if filename is '' or None:
             return
@@ -120,7 +121,7 @@ def do_gui(puzzle):
     root.geometry("600x700")
     text = Text(root)
 
-    ex = TkinterGUI(puzzle)
+    ex = TkinterGUI(puzzle, root)
 
     #ex.draw_square(30, 30, 5)
     ex.draw_puzzle()
