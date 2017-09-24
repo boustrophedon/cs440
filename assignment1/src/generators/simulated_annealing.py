@@ -21,22 +21,37 @@ class SimulatedAnnealingGenerator:
 			# print(str(new_value-old_value / temp))
 			print(str(math.exp(new_value-old_value / temp)))
 
-			# if temp < 0.00001:
-				# break
+			# if temp < 1e-10:
+				# temp = start_temp
 
+			# TO-DO:
+			# Verify numbers w/ teacher/TAs/classmates
+			# Delete this ugly commented out code
 			# acceptance_prob = math.exp((old_value - new_value)/temp)
 
-			acceptance_prob = math.exp((new_value - old_value)/temp)
-			# if acceptance_prob <= 0.0:
-				# break
+			try:
+				acceptance_prob = math.exp((new_value - old_value)/temp)
+			except OverflowError as exc:
+				temp = start_temp
+				acceptance_prob = math.exp((new_value - old_value) / temp)
+
+
 			# if new_value > old_value or random.uniform(0, 1) < acceptance_prob:
-			if new_value <= old_value and random.uniform(0, 1) < acceptance_prob:
+			if new_value > old_value and random.uniform(0, 1) < acceptance_prob:
+
+			# if new_value <= old_value and random.uniform(0, 1) < acceptance_prob:
 
 				self.puzzle[x,y] = old
+				old_value = new_value
+
 				# probably not this
 				# self.puzzle = p
 			# else:
 				# old_value = self.puzzle.value()
+
+
+			# if new_value > old_value:
+				# old_value = new_value
 
 			temp = temp * decay_rate
 		return (self.puzzle.clone_grid(), self.puzzle.value())
