@@ -16,7 +16,7 @@ class RandomRestartsGenerator:
 	# Returns a tuple of the grid with the highest value and its value
 	def generate(self, iters, restarts, report=False):
 		best_grid,best_value = HillClimbingGenerator(self.size).generate(iters,report=report)
-		for i in range(1, iters):
+		for i in range(1, restarts):
 			grid, value = HillClimbingGenerator(self.size).generate(iters,report=report)
 			if value >= best_value:
 				best_grid = grid
