@@ -16,9 +16,9 @@ numberFont = (None, 20)
 
 class TkinterGUI(Frame):
 
-    def __init__(self, puzzle):
+    def __init__(self, puzzle, root):
         super().__init__()
-        self.initUI(puzzle)
+        self.initUI(puzzle, root)
 
     def initUI(self, puzzle, root):
         self.root = root
@@ -129,3 +129,5 @@ def do_gui(puzzle):
 
     # root.update()
     # ex.update()
+
+
