@@ -1,10 +1,14 @@
 from tkinter import *
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
+import datetime
+import os
 from puzzle import PuzzleGrid
 from numpy import *
 import numpy as np
 from grid import Grid
+import datetime
+import os
 
 WEIRD_ORANGE= "#fb0"
 RED = "#f00"
@@ -23,6 +27,7 @@ class TkinterGUI(Frame):
     def initUI(self, puzzle, root):
         self.root = root
         self.puzzle = puzzle
+        self.grid = self.puzzle.grid
         self.master.title("Assignment 1")
         self.pack(fill = BOTH, expand = 1)
         self.canvas = Canvas(self)
@@ -55,6 +60,7 @@ class TkinterGUI(Frame):
         #self.canvas.after(5, self.draw_square)
 
     def draw_puzzle(self):
+        self.canvas.create_rectangle(0, 0, 600, 600, outline=WHITE, fill=WHITE)
         oldstartx = startx = 25
         starty = 25
         size = self.puzzle.grid.size()
@@ -71,6 +77,29 @@ class TkinterGUI(Frame):
             for j in range(0, size):
                 # draw_square(startx, starty, puzzle.puzzle[i][j], 50, surface, font)
                 self.draw_square(x=startx, y=starty, n=self.puzzle.get(i, j))
+                # self.draw_square(startx, starty, puzzle.grid.array.get(i, j))
+                startx += 55
+            startx = oldstartx
+            starty += 55
+
+    def draw_puzzle_t(self):
+        self.canvas.create_rectangle(0, 0, 600, 600, outline=WHITE, fill=WHITE)
+        oldstartx = startx = 25
+        starty = 25
+        size = self.puzzle.grid.size()
+        if size is 9:
+            oldstartx = startx = 80
+            starty = 80
+        elif size is 7:
+            oldstartx = startx = 135
+            starty = 135
+        elif size is 5:
+            oldstartx = startx = 190
+            starty = 190
+        for i in range(0, size):
+            for j in range(0, size):
+                # draw_square(startx, starty, puzzle.puzzle[i][j], 50, surface, font)
+                self.draw_square(x=startx, y=starty, n=self.puzzle.get(j, i))
                 # self.draw_square(startx, starty, puzzle.grid.array.get(i, j))
                 startx += 55
             startx = oldstartx
@@ -100,10 +129,12 @@ class TkinterGUI(Frame):
 
     def file_save(self):
         self.root.update()
-        filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", title="Save file as...")
+        date = '' + str(datetime.datetime.now().year) + '_' + str(datetime.datetime.now().month) + '_' + str(datetime.datetime.now().day)
+        print(date)
+        filename = tk.filedialog.asksaveasfilename(defaultextension=".txt", title="Save file as...", initialdir=os.getcwd())
         if filename is '' or None:
             return
-        f = open(filename)
+        f = open(filename, "w")
         if f is None:  # asksaveasfile return `None` if dialog closed with "cancel".
             return
         # Write to file here
@@ -113,13 +144,16 @@ class TkinterGUI(Frame):
 
     def file_open(self):
         self.root.update()
-        filename = tk.filedialog.askopenfilename(defaultextension=".txt", title="Open grid/puzzle file")
+        filename = tk.filedialog.askopenfilename(defaultextension=".txt", title="Open grid/puzzle file", initialdir=os.getcwd())
         if filename is '' or None:
             return
-        f = open(filename)
+        #f = open(filename, "r")
         # Load from file here
-        self.grid = Grid.grid_from_filename(filename)
-        f.close()  # `()` was missing.
+        self.puzzle = PuzzleGrid((Grid(PuzzleGrid.from_file(filename).grid.array)))
+        self.draw_puzzle_t()
+        print(self.puzzle)
+        self.root.update()
+        #f.close()  # `()` was missing.
 
 
 def do_gui(puzzle):
