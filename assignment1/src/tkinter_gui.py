@@ -33,10 +33,16 @@ class TkinterGUI(Frame):
         self.solutionButton.place(x=25, y=620)
         self.originalButton = Button(self, text="Show original", command=self.draw_puzzle)
         self.originalButton.place(x=25, y=650)
-        openFileButton = Button(self, text="Open file...", command=self.file_open)
-        openFileButton.place(x=150, y=620)
-        saveFileButton = Button(self, text="Save to file", command=self.file_save)
-        saveFileButton.place(x=150, y=650)
+
+        openSolutionFileButton = Button(self, text="Open solution file...", command=self.file_open)
+        openSolutionFileButton.place(x=150, y=620)
+        saveSolutionFileButton = Button(self, text="Save solution to file", command=self.file_save)
+        saveSolutionFileButton.place(x=320, y=620)
+
+        openProblemFileButton = Button(self, text="Open problem file...", command=self.file_open)
+        openProblemFileButton.place(x=150, y=650)
+        saveProblemFileButton = Button(self, text="Save problem to file", command=self.file_save)
+        saveProblemFileButton.place(x=320, y=650)
 
     def draw_square(self, x, y, n):
         self.canvas.create_rectangle(x - 25, y - 25, x + 25, y + 25, outline=DARK_RED, fill=DARK_RED)

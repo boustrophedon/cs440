@@ -17,9 +17,9 @@ class SimulatedAnnealingGenerator:
 			# make a random change
 			x, y, old = self.puzzle.change_random_entry()
 			new_value = self.puzzle.value()
-			print('new_value= ' + str(new_value) + '; old_value= ' + str(old_value) + '; temp= ' + str(temp))
-			# print(str(new_value-old_value / temp))
-			print(str(math.exp(new_value-old_value / temp)))
+			# These were the numbers I was printing
+			# print('new_value= ' + str(new_value) + '; old_value= ' + str(old_value) + '; temp= ' + str(temp))
+			# print(str(math.exp(new_value-old_value / temp)))
 
 			# if temp < 1e-10:
 				# temp = start_temp
@@ -54,4 +54,5 @@ class SimulatedAnnealingGenerator:
 				# old_value = new_value
 
 			temp = temp * decay_rate
-		return (self.puzzle.clone_grid(), self.puzzle.value())
+		# return (self.puzzle.clone_grid(), self.puzzle.value())
+		return self.puzzle.clone_grid(), old_value
