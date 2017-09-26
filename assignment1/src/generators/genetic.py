@@ -41,7 +41,7 @@ class GeneticGenerator:
 		return (best.clone_grid(), best.value())
 
 # Given two 2d numpy arrays, produce "offspring" of them by selecting a row at
-# random and combining them from the given row
+# random and combining them from the given row down.
 def crossover(g1, g2):
 	cutoff = numpy.random.choice(g1.shape[0])
 	g1[cutoff:] = g2[cutoff:]
@@ -49,6 +49,7 @@ def crossover(g1, g2):
 	return PuzzleGrid(Grid(g1))
 
 def mutate(p):
-	p.change_random_entry()
+	if numpy.random.random() < 0.02:
+		p.change_random_entry()
 
 	return p
