@@ -2,11 +2,11 @@
 
 Usage:
   puzzle_runner.py display [--gui] [<file>]
-  puzzle_runner.py generate [-o <file>] hill-climbing <size> <iters>
-  puzzle_runner.py generate [-o <file>] random-restarts <size> <iters> <restarts>
-  puzzle_runner.py generate [-o <file>] random-walk <size> <iters> <p>
-  puzzle_runner.py generate [-o <file>] annealing <size> <iters> <start_temp> <decay_rate> 
-  puzzle_runner.py generate [-o <file>] genetic <size> <iters> <pop_size>
+  puzzle_runner.py generate [-o <file>] [--gui] hill-climbing <size> <iters>
+  puzzle_runner.py generate [-o <file>] [--gui] random-restarts <size> <iters> <restarts>
+  puzzle_runner.py generate [-o <file>] [--gui] random-walk <size> <iters> <p>
+  puzzle_runner.py generate [-o <file>] [--gui] annealing <size> <iters> <start_temp> <decay_rate> 
+  puzzle_runner.py generate [-o <file>] [--gui] genetic <size> <iters> <pop_size>
   puzzle_runner.py --help
   puzzle_runner.py --version
 
@@ -84,9 +84,10 @@ def main():
 		if arguments["--output"]:
 			with open(arguments["--output"], "w") as f:
 				f.write(str(output[0].size()) + "\n" + str(output[0]))
-		else:
-			# print(str(output[0]) + "\n" + str(output[1]))
+		elif arguments["--gui"]:
 			do_gui(PuzzleGrid(output[0]))
+		else:
+			print(str(output[0]) + "\n" + str(output[1]))
 
 if __name__ == '__main__':
 	main()
