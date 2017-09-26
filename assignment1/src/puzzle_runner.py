@@ -85,8 +85,8 @@ def main():
 			with open(arguments["--output"], "w") as f:
 				f.write(str(output[0].size()) + "\n" + str(output[0]))
 		else:
-			# display the puzzle with the gui, i.e. don't do this
-			print(str(output[0]) + "\n" + str(output[1]))
+			# print(str(output[0]) + "\n" + str(output[1]))
+			do_gui(PuzzleGrid(output[0]))
 
 if __name__ == '__main__':
 	main()
