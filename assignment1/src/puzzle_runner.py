@@ -42,6 +42,10 @@ def main():
 	elif arguments["generate"]:
 		size = int(arguments["<size>"])
 		iters = int(arguments["<iters>"])
+		if not iters > 0:
+			raise ValueError("Number of iterations should be > 0. Input: {}".format(iters))
+		if not size > 0:
+			raise ValueError("Size should be > 0. Input: {}".format(size))
 
 		output = None
 		if arguments["hill-climbing"]:
@@ -50,6 +54,8 @@ def main():
 			output = gen.generate(iters)
 		elif arguments["random-restarts"]:
 			restarts = int(arguments["<restarts>"])
+			if not restarts > 0:
+				raise ValueError("Number of restarts should be > 0. Input: {}".format(restarts))
 
 			gen = RandomRestartsGenerator(size)
 			output = gen.generate(iters, restarts)
@@ -68,8 +74,11 @@ def main():
 			gen = SimulatedAnnealingGenerator(size, iters, start_temp, decay_rate)
 		elif arguments["genetic"]:
 			population_size = int(arguments["<pop_size>"])
+			if not population_size > 0:
+				raise ValueError("Population size should be > 0. Input: {}".format(population_size))
 
-			gen = GeneticGenerator(size, iters, population_size)
+			gen = GeneticGenerator(size)
+			output = gen.generate(iters, population_size)
 
 		if arguments["--output"]:
 			with open(arguments["--output"], "w") as f:

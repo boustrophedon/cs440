@@ -72,7 +72,6 @@ class PuzzleGrid:
 		old = self.get(x,y)
 
 		self.set(x,y, self.get_random_value(x, y))
-		self.do_evaluate()
 		return (x,y,old)
 
 	# Returns the value of the grid puzzle at point (x,y)
