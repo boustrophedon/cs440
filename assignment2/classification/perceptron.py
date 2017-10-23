@@ -40,10 +40,18 @@ class PerceptronClassifier:
     # DO NOT ZERO OUT YOUR WEIGHTS BEFORE STARTING TRAINING
     
     for iteration in range(self.max_iterations):
-      print "Starting iteration ", iteration, "..."
+      print("Starting iteration ", iteration, "...")
       for i in range(len(trainingData)):
-          "*** YOUR CODE HERE ***"
-          util.raiseNotDefined()
+        datum = trainingData[i]
+        label = trainingLabels[i]
+
+        data = list()
+        data.append(datum)
+        guess = self.classify(data)[0]
+
+        if guess != label:
+          self.weights[guess] -= datum
+          self.weights[label] += datum
     
   def classify(self, data ):
     """
