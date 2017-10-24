@@ -8,7 +8,7 @@ DATA_HEIGHT=28
 LAYER1_WIDTH = 10
 LAYER2_WIDTH = 10
 
-LEARN_RATE = 0.1
+LEARN_RATE = 1
 
 class MLPClassifier:
   """
@@ -40,7 +40,7 @@ class MLPClassifier:
     # we don't really need to do that here but it is done in actual practice
 
     self.layer2 = 0.01*numpy.random.randn(len(self.legalLabels), LAYER1_WIDTH)
-    self.layer2_bias = numpy.zeros(LAYER2_WIDTH)
+    self.layer2_bias = numpy.zeros(len(self.legalLabels))
     
       
   def train( self, trainingData, trainingLabels, validationData, validationLabels ):
@@ -57,23 +57,43 @@ class MLPClassifier:
         y = numpy.zeros(len(self.legalLabels))
         y[trainingLabels[i]] = 1
 
-        hidden = numpy.dot(self.layer1, x) + self.layer1_bias
-        # tanh activation function
-        numpy.tanh(x, out=hidden)
+        hidden = numpy.tanh(numpy.dot(self.layer1, x) + self.layer1_bias)
         
-        guess = numpy.dot(self.layer2, hidden) + self.layer2_bias
+        guess = numpy.tanh(numpy.dot(self.layer2, hidden) + self.layer2_bias)
 
-        loss = (y - guess)
-        dguess = (1-guess*guess)*loss
-        #TODO backprop, see http://cs231n.github.io/optimization-2/#mat
-        # and p 734 in textbook
-        return
+        error = (y - guess)
+        # derivative of tanh, activation function, times the error
+        dguess = (1-guess*guess)*error
+
+        # layer2 is (O x H), dguess is (O x 1), hidden is (H, 1), so we want dguess * hidden.T = (O x H)
+        dlayer2 = numpy.outer(dguess, hidden.T)
+        dbias2 = dguess
         
+        # hidden is (H x 1), layer2 weights are (O x H), so we want layer2.T * (O x 1) => layer2.T * dguess
+        dhidden = numpy.dot(self.layer2.T, dguess)
+        # derivative of tanh again
+        dhidden = dhidden*(1 - hidden*hidden)
+        
+        # layer1 = (H x I), dhidden is (H x 1) and input is (I x 1) so we do dhidden * x.T = (H x I)
+        dlayer1 = numpy.outer(dhidden, x.T)
+        dbias1 = dhidden
+
+        self.layer2 -= LEARN_RATE*dlayer2
+        self.layer2_bias -= LEARN_RATE*dbias2
+        self.layer1 -= LEARN_RATE*dlayer1
+        self.layer1_bias -= LEARN_RATE*dbias1
 
   def classify(self, data ):
     guesses = []
     for datum in data:
-       pass 
+      x_in = numpy.empty(DATA_WIDTH*DATA_HEIGHT, dtype=int)
+      for (x,y), v in datum.items():
+          x_in[y*DATA_HEIGHT + x] = v
+
+      hidden = numpy.tanh(numpy.dot(self.layer1, x_in) + self.layer2_bias)
+      guess = numpy.tanh(numpy.dot(self.layer2, hidden) + self.layer2_bias)
+      guesses.append(numpy.argmax(guess))
+       
     return guesses
 
 # tanh activation function
