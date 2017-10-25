@@ -1,0 +1,10 @@
+perceptron,500,0.248
+perceptron,1000,0.25
+perceptron,1500,0.244
+perceptron,2000,0.218
+perceptron,2500,0.213
+perceptron,3000,0.199
+perceptron,3500,0.193
+perceptron,4000,0.202
+perceptron,4500,0.192
+perceptron,5000,0.189
