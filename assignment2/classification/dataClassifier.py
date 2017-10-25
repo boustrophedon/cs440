@@ -55,7 +55,6 @@ def analysis(classifier, guesses, trainingData, trainingLabels, testLabels, test
   """
 
   c_name = str() 
-  print(classifier.__class__)
   if classifier.__class__ == mlp.MLPClassifier:
     c_name = "mlp"
   elif classifier.__class__ == perceptron.PerceptronClassifier:

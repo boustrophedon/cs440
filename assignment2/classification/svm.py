@@ -38,8 +38,6 @@ class SVMClassifier:
       in_vectorized.append(x_in)
    
     labels = trainingLabels[:data_size]
-    print(len(labels))
-    print(len(in_vectorized))
     self.classifier.fit(in_vectorized, labels)
   def classify(self, data ):
     guesses = []

@@ -1,4 +1,4 @@
-virtualenv-2.7 .
+virtualenv2 .
 source bin/activate
 pip install -r requirements.txt
 echo
