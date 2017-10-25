@@ -16,9 +16,7 @@ def read_data(fname):
   name = lines[0][0]
 
   x = [int(line[1]) for line in lines]
-  print(x)
   y = [float(line[2]) for line in lines]
-  print(y)
 
   return (x, y, name)
 
@@ -47,15 +45,15 @@ def main():
   svmte_data = read_data("out/"+svm_test)
 
   plt.hold(True)
-  draw_graph("Training with varying levels of training data", *ptr_data)
-  draw_graph("Training with varying levels of training data", *mlptr_data)
-  draw_graph("Training with varying levels of training data", *svmtr_data)
+  draw_graph("Training on small data sets, training data error", *ptr_data)
+  draw_graph("Training on small data sets, training data error", *mlptr_data)
+  draw_graph("Training on small data sets, training data error", *svmtr_data)
   plt.savefig("out/training.eps", format="eps")
   plt.cla()
 
-  draw_graph("Training with varying levels of training data", *ptr_data)
-  draw_graph("Training with varying levels of training data", *mlptr_data)
-  draw_graph("Training with varying levels of training data", *svmtr_data)
+  draw_graph("Training on small data sets, test data error", *pte_data)
+  draw_graph("Training on small data sets, test data error", *mlpte_data)
+  draw_graph("Training on small data sets, test data error", *svmte_data)
   plt.savefig("out/test.eps", format="eps")
 
 if __name__ == '__main__':
