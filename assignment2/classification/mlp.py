@@ -2,13 +2,17 @@
 # -------------
 
 import numpy
+
+from dataClassifier import TRAIN_PERCENTAGE
+
 DATA_WIDTH=28
 DATA_HEIGHT=28
 
-LAYER1_WIDTH = 10
+LAYER1_WIDTH = 20
 LAYER2_WIDTH = 10
 
-LEARN_RATE = 1
+LEARN_RATE = 0.2
+
 
 class MLPClassifier:
   """
@@ -54,6 +58,9 @@ class MLPClassifier:
     for iteration in range(self.max_iterations):
       print("Starting iteration ", iteration, "...")
       for i, x in enumerate(in_vectorized):
+        #if i > TRAIN_PERCENTAGE*len(in_vectorized):
+        #  break
+
         y = numpy.zeros(len(self.legalLabels))
         y[trainingLabels[i]] = 1
 
@@ -78,10 +85,10 @@ class MLPClassifier:
         dlayer1 = numpy.outer(dhidden, x.T)
         dbias1 = dhidden
 
-        self.layer2 -= LEARN_RATE*dlayer2
-        self.layer2_bias -= LEARN_RATE*dbias2
-        self.layer1 -= LEARN_RATE*dlayer1
-        self.layer1_bias -= LEARN_RATE*dbias1
+        self.layer2 += LEARN_RATE*dlayer2
+        self.layer2_bias += LEARN_RATE*dbias2
+        self.layer1 += LEARN_RATE*dlayer1
+        self.layer1_bias += LEARN_RATE*dbias1
 
   def classify(self, data ):
     guesses = []
@@ -90,12 +97,8 @@ class MLPClassifier:
       for (x,y), v in datum.items():
           x_in[y*DATA_HEIGHT + x] = v
 
-      hidden = numpy.tanh(numpy.dot(self.layer1, x_in) + self.layer2_bias)
+      hidden = numpy.tanh(numpy.dot(self.layer1, x_in) + self.layer1_bias)
       guess = numpy.tanh(numpy.dot(self.layer2, hidden) + self.layer2_bias)
       guesses.append(numpy.argmax(guess))
        
     return guesses
-
-# tanh activation function
-def activation(x, out):
-    numpy.tanh(x, out=out)

@@ -1,5 +1,7 @@
 # dataClassifier.py
 # -----------------
+import os
+TRAIN_PERCENTAGE = float(os.getenv("TRAIN_PERCENTAGE", 1))
 
 import mostFrequent
 import perceptron
@@ -13,6 +15,7 @@ TRAINING_SET_SIZE = 5000
 TEST_SET_SIZE = 1000
 DIGIT_DATUM_WIDTH=28
 DIGIT_DATUM_HEIGHT=28
+
 
 def basicFeatureExtractorDigit(datum):
   """
@@ -30,7 +33,7 @@ def basicFeatureExtractorDigit(datum):
         features[(x,y)] = 0
   return features
 
-def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage):
+def analysis(classifier, guesses, trainingData, trainingLabels, testLabels, testData, rawTestData, printImage):
   """
   This function is called after learning.
   Include any code that you want here to help you analyze your results.
@@ -50,19 +53,36 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
   This code won't be evaluated. It is for your own optional use
   (and you can modify the signature if you want).
   """
+
+  c_name = str() 
+  print(classifier.__class__)
+  if classifier.__class__ == mlp.MLPClassifier:
+    c_name = "mlp"
+  elif classifier.__class__ == perceptron.PerceptronClassifier:
+    c_name = "perceptron"
+  elif classifier.__class__ == svm.SVMClassifier:
+    c_name = "svm"
+
+  training_outfile = "out/"+c_name+"_training_data.txt"
+  test_outfile = "out/"+c_name+"_test_data.txt"
+
+  points_used = int(TRAIN_PERCENTAGE*TRAINING_SET_SIZE)
+
+  correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+  correct = float(correct)
+  error = 1-(correct / len(testLabels))
   
-  # Put any code here...
-  # Example of use:
-  for i in range(len(guesses)):
-      prediction = guesses[i]
-      truth = testLabels[i]
-      if (prediction != truth):
-          print "==================================="
-          print "Mistake on example %d" % i 
-          print "Predicted %d; truth is %d" % (prediction, truth)
-          print "Image: "
-          print rawTestData[i]
-          break
+  with open(test_outfile, "a") as f:
+    f.write("{},{},{}\n".format(c_name, points_used, error))
+
+  training_guesses = classifier.classify(trainingData)
+  correct = [training_guesses[i] == trainingLabels[i] for i in range(len(trainingLabels))].count(True)
+  correct = float(correct)
+  error = 1-(correct / len(trainingLabels))
+
+  with open(training_outfile, "a") as f:
+    f.write("{},{},{}\n".format(c_name, points_used, error))
+
 
 class ImagePrinter:
     def __init__(self, width, height):
@@ -185,14 +205,14 @@ def runClassifier(args, options):
   print "Training..."
   classifier.train(trainingData, trainingLabels, validationData, validationLabels)
   print "Validating..."
-  guesses = classifier.classify(validationData)
-  correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+  validation_guesses = classifier.classify(validationData)
+  correct = [validation_guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
   print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
   print "Testing..."
-  guesses = classifier.classify(testData)
-  correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+  test_guesses = classifier.classify(testData)
+  correct = [test_guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
   print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
-  analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
+  analysis(classifier, test_guesses, trainingData, trainingLabels, testLabels, testData, rawTestData, printImage)
 
   if((options.weights) & (options.classifier == "perceptron")):
     for l in classifier.legalLabels:

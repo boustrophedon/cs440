@@ -2,6 +2,8 @@
 # -------------
 
 # Perceptron implementation
+from dataClassifier import TRAIN_PERCENTAGE
+
 import util
 PRINT = True
 
@@ -42,6 +44,8 @@ class PerceptronClassifier:
     for iteration in range(self.max_iterations):
       print("Starting iteration ", iteration, "...")
       for i in range(len(trainingData)):
+        if i > TRAIN_PERCENTAGE*len(trainingData):
+          break
         datum = trainingData[i]
         label = trainingLabels[i]
 
