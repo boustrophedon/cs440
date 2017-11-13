@@ -2,16 +2,17 @@
 # -------------
 
 import numpy
+from scipy.special import expit
 
 from dataClassifier import TRAIN_PERCENTAGE
 
 DATA_WIDTH=28
 DATA_HEIGHT=28
 
-LAYER1_WIDTH = 20
+LAYER1_WIDTH = 30
 LAYER2_WIDTH = 10
 
-LEARN_RATE = 0.2
+LEARN_RATE = 0.1
 
 
 class MLPClassifier:
@@ -58,19 +59,19 @@ class MLPClassifier:
     for iteration in range(self.max_iterations):
       print("Starting iteration ", iteration, "...")
       for i, x in enumerate(in_vectorized):
-        #if i > TRAIN_PERCENTAGE*len(in_vectorized):
-        #  break
+        if i > TRAIN_PERCENTAGE*len(in_vectorized):
+          break
 
         y = numpy.zeros(len(self.legalLabels))
         y[trainingLabels[i]] = 1
 
-        hidden = numpy.tanh(numpy.dot(self.layer1, x) + self.layer1_bias)
+        hidden = expit(numpy.dot(self.layer1, x) + self.layer1_bias)
         
-        guess = numpy.tanh(numpy.dot(self.layer2, hidden) + self.layer2_bias)
+        guess = expit(numpy.dot(self.layer2, hidden) + self.layer2_bias)
 
-        error = (y - guess)
-        # derivative of tanh, activation function, times the error
-        dguess = (1-guess*guess)*error
+        error = (guess-y)
+
+        dguess = (guess*(1-guess))*error
 
         # layer2 is (O x H), dguess is (O x 1), hidden is (H, 1), so we want dguess * hidden.T = (O x H)
         dlayer2 = numpy.outer(dguess, hidden.T)
@@ -79,16 +80,16 @@ class MLPClassifier:
         # hidden is (H x 1), layer2 weights are (O x H), so we want layer2.T * (O x 1) => layer2.T * dguess
         dhidden = numpy.dot(self.layer2.T, dguess)
         # derivative of tanh again
-        dhidden = dhidden*(1 - hidden*hidden)
+        dhidden = dhidden*(hidden*(1-hidden))
         
         # layer1 = (H x I), dhidden is (H x 1) and input is (I x 1) so we do dhidden * x.T = (H x I)
         dlayer1 = numpy.outer(dhidden, x.T)
         dbias1 = dhidden
 
-        self.layer2 += LEARN_RATE*dlayer2
-        self.layer2_bias += LEARN_RATE*dbias2
-        self.layer1 += LEARN_RATE*dlayer1
-        self.layer1_bias += LEARN_RATE*dbias1
+        self.layer2 -= LEARN_RATE*dlayer2
+        self.layer2_bias -= LEARN_RATE*dbias2
+        self.layer1 -= LEARN_RATE*dlayer1
+        self.layer1_bias -= LEARN_RATE*dbias1
 
   def classify(self, data ):
     guesses = []

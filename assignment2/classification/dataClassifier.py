@@ -71,16 +71,16 @@ def analysis(classifier, guesses, trainingData, trainingLabels, testLabels, test
   correct = float(correct)
   error = 1-(correct / len(testLabels))
   
-  with open(test_outfile, "a") as f:
-    f.write("{},{},{}\n".format(c_name, points_used, error))
+  #with open(test_outfile, "a") as f:
+  #  f.write("{},{},{}\n".format(c_name, points_used, error))
 
   training_guesses = classifier.classify(trainingData)
   correct = [training_guesses[i] == trainingLabels[i] for i in range(len(trainingLabels))].count(True)
   correct = float(correct)
   error = 1-(correct / len(trainingLabels))
 
-  with open(training_outfile, "a") as f:
-    f.write("{},{},{}\n".format(c_name, points_used, error))
+  #with open(training_outfile, "a") as f:
+  #  f.write("{},{},{}\n".format(c_name, points_used, error))
 
 
 class ImagePrinter:
