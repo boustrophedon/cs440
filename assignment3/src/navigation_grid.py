@@ -23,7 +23,7 @@ def both_highway(g1, g2):
     return (g1 in (HIGHWAY, HTT_HIGHWAY) and g2 in (HIGHWAY, HTT_HIGHWAY))
 
 class NavigationGrid:
-    def __init__(width=160, height=120):
+    def __init__(self, width=160, height=120):
         # add two for blocked boarder around edges. This makes neighbor computation easier.
         self.width = width+2
         self.height = height+2
