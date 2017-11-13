@@ -57,6 +57,13 @@ class NavigationGrid:
     def generate_grid(self):
         raise NotImplementedError
 
+    def neighbors_with_costs(self, p):
+        """ Returns a list of neighbors of the point with the costs to move to that point """
+        ncosts = list()
+        for p2 in self.neighbors(p):
+            ncosts.append((p2, self.cost(p, p2)))
+
+        return ncosts
     def neighbors(self, p):
         """ Returns the indices of the neighbors of `p` in the grid."""
         assert(0 < p[0] < self.width - 1)
