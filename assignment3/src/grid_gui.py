@@ -38,16 +38,19 @@ class MainApplication(tk.Frame):
         self.y_e.place(x=1000 + 165, y=150 - 10)
 
         # Calculate button
-        calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
-        calc_button.place(x=1000 + 30, y=200 - 30)
+        #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
+        calc_button = tk.Button(self.canvas, text="Calculate", command=self.calculate)
+
+        calc_button.place(x=1000 + 30 + 40 + 10, y=200)
 
         # Open file button
-        open_button = tk.Button(self.canvas, height=5, width=20, text="Open file", command=self.open_file)
-        open_button.place(x=1000 + 30, y=200 + 30)
+        #open_button = tk.Button(self.canvas, height=5, width=20, text="Open file", command=self.open_file)
+        open_button = tk.Button(self.canvas, text="Open file", command=self.open_file)
+        open_button.place(x=1000 + 30 + 50, y=200 + 60)
 
         # Save file button
-        save_button = tk.Button(self.canvas, height=5, width=20, text="Save file", command=self.save_file)
-        save_button.place(x=1000 + 30, y=200 + 90)
+        save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
+        save_button.place(x=1000 + 30 + 50, y=200 + 90 + 30)
 
         self.draw_map(self.canvas)
 
