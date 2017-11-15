@@ -30,6 +30,9 @@ class NavigationGrid:
     def __init__(self, width=160, height=120):
         self.width = width
         self.height = height
+        self.start = None
+        self.goal = None
+        self.htt_centers = None
 
         # since we only have 5 possible values U1 is overkill but it makes it
         # easier to display

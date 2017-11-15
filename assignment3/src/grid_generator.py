@@ -1,4 +1,5 @@
 import random
+import math
 
 import itertools
 
@@ -118,6 +119,7 @@ class GridGenerator:
                 curr = tadd(curr, v)
                 if not highways.is_inside(curr):
                     hit_border = True
+                    break
                 elif highways.is_highway(curr):
                     return False
                 else:
@@ -138,10 +140,42 @@ class GridGenerator:
             return True
 
     def select_blocked(self, grid):
-        grid[1,1] = BLOCKED
+        blocked_max = (self.width*self.height)//5
+        count = 0
+        while count < blocked_max:
+            p = self.random_cell()
+            if not grid.is_highway(p):
+                count+=1
+                grid[p] = BLOCKED
 
     def select_start(self, grid):
-        grid.start = (0,0)
+        is_blocked = True
+        start = (0,0)
+        while is_blocked:
+            border = self.random_boundary_cell()
+            xoffset = random.choice(range(-20, 21))
+            yoffset = random.choice(range(-20, 21))
+
+            x = (border[0] + xoffset) % self.width
+            y = (border[1] + yoffset) % self.height
+
+            start = (x,y)
+            is_blocked = grid[start] is BLOCKED
+        grid.start = start
     
     def select_goal(self, grid):
-        grid.goal = (100,100)
+        is_blocked = True
+        is_too_close = True
+        goal = (0,0)
+        while is_blocked or is_too_close:
+            border = self.random_boundary_cell()
+            xoffset = random.choice(range(-20, 21))
+            yoffset = random.choice(range(-20, 21))
+
+            x = (border[0] + xoffset) % self.width
+            y = (border[1] + yoffset) % self.height
+
+            goal = (x,y)
+            is_blocked = grid[goal] is BLOCKED
+            is_too_close = math.sqrt( (grid.start[0] - goal[0])**2 + (grid.start[1] - goal[1])**2) < 100
+        grid.goal = goal
