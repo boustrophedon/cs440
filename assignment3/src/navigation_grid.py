@@ -10,6 +10,10 @@ HTT='2'
 HIGHWAY='a'
 HTT_HIGHWAY='b'
 
+def tadd(t1, t2):
+    """ Add coordinate tuples pointwise """
+    return (t1[0] + t2[0], t1[1] + t2[1])
+
 def both_unblocked(g1, g2):
     return (g1 in (UNBLOCKED, HIGHWAY) and g2 in (UNBLOCKED, HIGHWAY))
 
@@ -24,22 +28,15 @@ def both_highway(g1, g2):
 
 class NavigationGrid:
     def __init__(self, width=160, height=120):
-        # add two for blocked boarder around edges. This makes neighbor computation easier.
-        self.width = width+2
-        self.height = height+2
+        self.width = width
+        self.height = height
 
         # since we only have 5 possible values U1 is overkill but it makes it
         # easier to display
-        v = numpy.full((self.width, self.height), UNBLOCKED, dtype=numpy.dtype("U1"))
-
-        # surround inner area with blocked boarder.
-        v[:,0] = BLOCKED
-        v[:,-1] = BLOCKED
-        v[0,:] = BLOCKED
-        v[-1,:] = BLOCKED
+        # also width and height are switched so that the rows are of length
+        # `width` and vice versa. this is nice for when we print out the grid. 
+        v = numpy.full((self.height, self.width), UNBLOCKED, dtype=numpy.dtype("U1"))
         self.grid = v
-
-        self.generate_grid()
 
     @classmethod
     def from_file(cls, file_name):
@@ -51,11 +48,16 @@ class NavigationGrid:
     def set(self, x, y, val):
         self[x, y] = val
 
+    def is_inside(self, p):
+        """ Returns True if point `p` is inside the grid, False otherwise """
+        return (0 <= p[0] < self.width) and (0 <= p[1] < self.height)
+
+    def is_highway(self, p):
+        """ Returns True if point `p` is on a highway, False otherwise """
+        return self[p] in (HIGHWAY, HTT_HIGHWAY)
+
     def size(self):
         return (self.width, self.height)
-
-    def generate_grid(self):
-        raise NotImplementedError
 
     def neighbors_with_costs(self, p):
         """ Returns a list of neighbors of the point with the costs to move to that point """
@@ -64,10 +66,10 @@ class NavigationGrid:
             ncosts.append((p2, self.cost(p, p2)))
 
         return ncosts
+
     def neighbors(self, p):
         """ Returns the indices of the neighbors of `p` in the grid."""
-        assert(0 < p[0] < self.width - 1)
-        assert(0 < p[1] < self.height - 1)
+        assert(self.is_inside(p))
 
         neighbors = list()
 
@@ -81,9 +83,9 @@ class NavigationGrid:
                    (0, -1)]
 
         for x in offsets:
-            neighbors.append(p+x)
+            neighbors.append(tadd(p,x))
 
-        return neighbors
+        return list(filter(self.is_inside, neighbors))
 
     def cost(self, p1, p2):
         """ p1, p2 are points in the grid, which must be neighboring. Returns
@@ -113,15 +115,28 @@ class NavigationGrid:
         return dist
 
     def __getitem__(self, idx):
-        # shift by 1 to compensate for border
-        idx = idx+(1,1)
-        # we have to reverse the index because x = width and y = height, but indexing a numpy array at [x,y] indexes x as the row and y as the column, which is backwards.
+        # we have to reverse the index because x = width and y = height, but
+        # indexing a numpy array at [x,y] indexes x as the row and y as the
+        # column, which is backwards.
 
-        return self.grid[idx[::-1]]
+        return self.grid[(idx[1], idx[0])]
 
     def __setitem__(self, idx, val):
-        # shift by 1 to compensate for border
-        idx = idx+(1,1)
+        self.grid[(idx[1], idx[0])] = val
 
-        self.grid[idx[::-1]] = val
+    def iter(self):
+        return numpy.nditer(self.grid)
+
+    def iter_mut(self):
+        return numpy.nditer(self.grid, op_flags=['readwrite'])
+
+    def serialize(self):
+        out = list()
+        out.append(' '.join((str(self.start[0]), str(self.start[1]))))
+        out.append(' '.join((str(self.goal[0]), str(self.goal[1]))))
+        for p in self.htt_centers:
+            out.append(' '.join((str(p[0]), str(p[1]))))
+        for row in self.grid:
+            out.append(''.join(list(row)))
+        return '\n'.join(out)
 
