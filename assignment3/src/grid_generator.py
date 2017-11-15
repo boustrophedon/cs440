@@ -110,8 +110,8 @@ class GridGenerator:
         v[0] *= (1 if (self.width//2 - start[0]) > 0 else -1)
         v[1] *= (1 if (self.height//2 - start[1]) > 0 else -1)
 
-        path = list()
-        path.append(start)
+        path = set()
+        path.add(start)
         curr = start
         hit_border = False
         while not hit_border:
@@ -120,17 +120,27 @@ class GridGenerator:
                 if not highways.is_inside(curr):
                     hit_border = True
                     break
-                elif highways.is_highway(curr):
+                elif highways.is_highway(curr) or curr in path:
                     return False
                 else:
-                    path.append(curr)
+                    path.add(curr)
 
+            # move "left"
             if with_p(0.2):
                 # switch from moving in x dir to y dir or vice versa
                 v[0], v[1] = v[1], v[0]
-                perp_dir = random.choice((-1, 1))
-                v[0] *= perp_dir
-                v[1] *= perp_dir
+                # 1*1 = 1, -1*-1 = 1 so either way we end up with 1
+                v[0] *= v[0]
+                v[1] *= v[1]
+            # move "right"
+            elif with_p(0.2):
+                # switch from moving in x dir to y dir or vice versa
+                v[0], v[1] = v[1], v[0]
+                v[0] *= -1*v[0]
+                v[1] *= -1*v[1]
+            # with probability 0.6 don't do anything
+            else:
+                pass
 
         if len(path) < 100:
             return False
