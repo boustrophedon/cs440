@@ -49,8 +49,8 @@ class GridGenerator:
             if new_cell not in centers:
                 centers.add(new_cell)
 
-        offsets = itertools.product(range(-30, 31), range(-30, 31))
         for center in centers:
+            offsets = itertools.product(range(-15, 16), range(-15, 16))
             points = [tadd(center, offset) for offset in offsets]
             points = filter(grid.is_inside, points)
             for p in points:
