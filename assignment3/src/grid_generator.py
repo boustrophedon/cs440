@@ -97,18 +97,18 @@ class GridGenerator:
         start = self.random_boundary_cell()
         # this will never fail with probability 1, so we can keep going until
         # we find a valid start
-        while highways.is_highway(start):
+        while highways.is_highway(start) or \
+            (start in ((0,0), (0, self.height), (self.width, 0), (self.width, self.height))):
             start = self.random_boundary_cell()
 
-        # v is the direction vector telling us which way to go
+        # direction to begin moving the highway
         v = [0,0]
-        v[random.choice((0,1))] = 1
-
-        # move in direction away from border, which is same as move towards center.
-        # if the distance from current position to center is positive, move in positive direction
-        # do same thing to both coords because it doesn't affect the coord that is 0.
-        v[0] *= (1 if (self.width//2 - start[0]) > 0 else -1)
-        v[1] *= (1 if (self.height//2 - start[1]) > 0 else -1)
+        if start[0] in (0, self.width):
+            v[0] = (1 if start[0] == 0 else -1)
+            v[1] = 0
+        else:
+            v[0] = 0
+            v[1] = (1 if start[1] == 0 else -1)
 
         path = set()
         path.add(start)
@@ -136,6 +136,7 @@ class GridGenerator:
             elif with_p(0.2):
                 # switch from moving in x dir to y dir or vice versa
                 v[0], v[1] = v[1], v[0]
+                # -1*1*1 = -1, -1*-1*-1 = -1 so either way we end up with -1
                 v[0] *= -1*v[0]
                 v[1] *= -1*v[1]
             # with probability 0.6 don't do anything
