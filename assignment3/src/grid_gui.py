@@ -11,6 +11,8 @@ dark_green = '#006600'
 black = '#000000'
 light_brown = '#cc9900'
 dark_brown = '#663300'
+light_blue = '#38c9ff'
+dark_blue = '#1b74e8'
 
 
 class MainApplication(tk.Frame):
@@ -80,12 +82,12 @@ class MainApplication(tk.Frame):
                 elif self.nav_grid.grid[i][j] == 'a':
                     canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=light_brown)
+                                            offset + square_size * (i + 1), fill=light_blue)
                 # Hard to to traverse with highway
                 elif self.nav_grid.grid[i][j] == 'b':
                     canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=dark_brown)
+                                            offset + square_size * (i + 1), fill=dark_blue)
 
     def calculate(self):
         """
