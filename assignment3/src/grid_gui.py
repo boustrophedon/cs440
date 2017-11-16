@@ -98,7 +98,7 @@ class MainApplication(tk.Frame):
         # Need to make sure integers are:
         # (1) parsed as integers
         # (2) within bounds
-        if self.x_e.get() != '' and y_e.get() != '':
+        if self.x_e.get() != '' and self.y_e.get() != '':
             result = int(self.x_e.get()) * int(self.y_e.get())
         # This is where we output the g, h and f values out
         self.canvas.itemconfigure(self.g_out, text=str(result))
