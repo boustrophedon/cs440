@@ -13,6 +13,9 @@ light_brown = '#cc9900'
 dark_brown = '#663300'
 light_blue = '#38c9ff'
 dark_blue = '#1b74e8'
+neon_pink = '#e81be4'
+light_neon_pink = '#ff68fc'
+purple = '#7f1ff4'
 
 
 class MainApplication(tk.Frame):
@@ -55,6 +58,7 @@ class MainApplication(tk.Frame):
         save_button.place(x=1000 + 30 + 50, y=200 + 90 + 30)
 
         self.draw_map(self.canvas)
+        self.illustrate_path()
 
 
     #nav_grid = GridGenerator().gen_grid()
@@ -65,29 +69,76 @@ class MainApplication(tk.Frame):
             for j in range(self.nav_grid.width):
                 # Blocked, black
                 if self.nav_grid.grid[i][j] == '0':
-                    canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
+                    canvas.create_rectangle(offset + square_size * j,
+                                            offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=black)
                 # Regular, light green
                 elif self.nav_grid.grid[i][j] == '1':
-                    canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
+                    canvas.create_rectangle(offset + square_size * j,
+                                            offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=light_green)
                 # Hard to traverse, dark green
                 elif self.nav_grid.grid[i][j] == '2':
-                    canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
+                    canvas.create_rectangle(offset + square_size * j,
+                                            offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=dark_green)
                 # Regular with highway, light brown
                 elif self.nav_grid.grid[i][j] == 'a':
-                    canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
+                    canvas.create_rectangle(offset + square_size * j,
+                                            offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=light_blue)
                 # Hard to to traverse with highway
                 elif self.nav_grid.grid[i][j] == 'b':
-                    canvas.create_rectangle(offset + square_size * j, offset + square_size * i,
+                    canvas.create_rectangle(offset + square_size * j,
+                                            offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=dark_blue)
+
+    def illustrate_path(self):
+        """
+        :param start: the startpoint
+        :param end: the endpoint
+        :return:
+        """
+        offset = 6
+        l = []
+        for i in range(100):
+            l.append((0, i))
+        for (x,y) in l:
+            if self.nav_grid.grid[y][x] == '0':
+                self.canvas.create_rectangle(offset + square_size * y,
+                                             offset + square_size * x,
+                                             offset + square_size * (y + 1),
+                                             offset + square_size * (x + 1),
+                                             fill=purple)
+            elif self.nav_grid.grid[y][x] == '1':
+                self.canvas.create_rectangle(offset + square_size * y,
+                                             offset + square_size * x,
+                                             offset + square_size * (y + 1),
+                                             offset + square_size * (x + 1),
+                                             fill=purple)
+            elif self.nav_grid.grid[y][x] == '2':
+                self.canvas.create_rectangle(offset + square_size * y,
+                                             offset + square_size * x,
+                                             offset + square_size * (y + 1),
+                                             offset + square_size * (x + 1),
+                                             fill=purple)
+            elif self.nav_grid.grid[y][x] == 'a':
+                self.canvas.create_rectangle(offset + square_size * y,
+                                             offset + square_size * x,
+                                             offset + square_size * (y + 1),
+                                             offset + square_size * (x + 1),
+                                             fill=purple)
+            elif self.nav_grid.grid[y][x] == 'b':
+                self.canvas.create_rectangle(offset + square_size * y,
+                                             offset + square_size * x,
+                                             offset + square_size * (y + 1),
+                                             offset + square_size * (x + 1),
+                                             fill=purple)
 
     def calculate(self):
         """
@@ -134,7 +185,7 @@ class MainApplication(tk.Frame):
             pass
         print(sfile)
         f = open(sfile, 'w')
-        f.write(str(nav_grid))
+        f.write(str(self.nav_grid))
         f.close()
 
 
