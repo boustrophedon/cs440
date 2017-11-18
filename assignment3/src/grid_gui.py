@@ -130,12 +130,12 @@ class MainApplication(tk.Frame):
         f.write(str(nav_grid))
         f.close()
 
-
-if __name__ == "__main__":
+def run_gui():
     root = tk.Tk()
     app = MainApplication(root)
     app.pack(side="top", fill="both", expand=True)
     app.master.title("Grid GUI: Assignment #3")
     root.mainloop()
 
-
+if __name__ == "__main__":
+    run_gui()
