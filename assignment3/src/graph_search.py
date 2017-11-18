@@ -38,12 +38,6 @@ class GraphSearch:
         while not len(fringe) == 0:
             f, curr = heappop(fringe)
 
-            #print(curr, f)
-            #print(fringe)
-            #if count == 3:
-            #    break
-            #count+=1
-
             if curr == goal:
                 return self.get_goal_path(preds)
             visited.add(curr)
@@ -82,7 +76,6 @@ def remove_from_heap(heap, point):
     for cost, p in heap:
         if p == point:
             x = (cost, p)
-            print(x)
             heap.remove(x)
             heapify(heap)
             break
