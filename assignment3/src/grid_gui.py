@@ -24,7 +24,7 @@ class MainApplication(tk.Frame):
         self.parent = parent
         self.nav_grid = GridGenerator().gen_grid()
         #<create the rest of your GUI here>
-        self.canvas = tk.Canvas(root, width=966 + 300, height=742)
+        self.canvas = tk.Canvas(self.parent, width=966 + 300, height=742)
         customFont = tkFont.Font(family="Monaco", size=20)
 
         self.canvas.pack()
@@ -57,11 +57,12 @@ class MainApplication(tk.Frame):
         save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
         save_button.place(x=1000 + 30 + 50, y=200 + 90 + 30)
 
+        self.refresh()
+
+    def refresh(self):
         self.draw_map(self.canvas)
         self.illustrate_path()
 
-
-    #nav_grid = GridGenerator().gen_grid()
 
     def draw_map(self, canvas):
         offset = 6
@@ -165,28 +166,16 @@ class MainApplication(tk.Frame):
         if not name:
             pass
         print(name.name)
-        f = open(name.name, 'r')
-        f.close()
-        # Set this object's grid to the file
-        # Display in tkinter
-        '''
-        try:
-            f = open(name, "r")
-            f.close()
-        except IOError:
-            pass
-        except TypeError:
-            pass
-        '''
+        self.nav_grid = NavigationGrid.from_file(name.name)
+        self.refresh()
 
     def save_file(self):
         sfile = tk.filedialog.asksaveasfilename(title="Save file as...")
         if not sfile:
             pass
         print(sfile)
-        f = open(sfile, 'w')
-        f.write(str(self.nav_grid))
-        f.close()
+        with open(sfile, 'w') as f:
+            f.write(self.nav_grid.serialize())
 
 def run_gui():
     root = tk.Tk()

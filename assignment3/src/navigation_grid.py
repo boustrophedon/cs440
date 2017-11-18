@@ -43,7 +43,34 @@ class NavigationGrid:
 
     @classmethod
     def from_file(cls, file_name):
-        raise NotImplementedError
+        def tuple_from_line(line):
+            t = line.strip().split()
+            t = int(t[0]), int(t[1])
+            return t
+
+        array = None
+        with open(file_name) as f:
+            lines = f.readlines()
+            start = tuple_from_line(lines[0])
+
+            goal = tuple_from_line(lines[1])
+
+            centers = list()
+            for i in range(0,8):
+                centers.append(tuple_from_line(lines[2+i]))
+
+            width = len(lines[10])-1 # -1 for newline
+            height = len(lines[10:])
+
+            grid = cls(width, height)
+            for y,row in enumerate(lines[10:]):
+                for x,c in enumerate(row.strip()):
+                    grid[x,y] = c
+            grid.start = start
+            grid.goal = goal
+            grid.htt_centers = centers
+
+            return grid
 
     def get(self, x, y):
         return self[x, y]
