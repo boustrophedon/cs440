@@ -20,8 +20,9 @@ green_dark = '#006600'
 pink_neon = '#e81be4'
 pink_neon_light = '#ff68fc'
 # Purple for traversal over rivers(?)
-purple = '#7f1ff4'
-purple_light=''
+purple = '#5600ba'
+# 5000ad    #7700ff
+purple_light='#a544ff'
 # Red for goal
 red = '#ff0000'
 # White for start
@@ -133,40 +134,48 @@ class MainApplication(tk.Frame):
         """
         offset = 6
         l = []
-        #l = GraphSearch.get_goal_path()
+        ucs_search = GraphSearch(self.nav_grid)
+        l = ucs_search.search()
+        print(l)
+        '''
         for i in range(120):
             l.append((i, i))
+        '''
         for (x,y) in l:
-            if self.nav_grid.grid[y][x] == '0':
-                self.canvas.create_rectangle(offset + square_size * y,
-                                             offset + square_size * x,
-                                             offset + square_size * (y + 1),
+            if self.nav_grid[x, y] == '1':
+                self.canvas.create_rectangle(offset + square_size * x,
+                                             offset + square_size * y,
                                              offset + square_size * (x + 1),
-                                             fill=purple)
-            elif self.nav_grid.grid[y][x] == '1':
-                self.canvas.create_rectangle(offset + square_size * y,
-                                             offset + square_size * x,
                                              offset + square_size * (y + 1),
+                                             fill=pink_neon_light)
+            elif self.nav_grid[x, y] == '2':
+                self.canvas.create_rectangle(offset + square_size * x,
+                                             offset + square_size * y,
                                              offset + square_size * (x + 1),
-                                             fill=purple)
-            elif self.nav_grid.grid[y][x] == '2':
-                self.canvas.create_rectangle(offset + square_size * y,
-                                             offset + square_size * x,
                                              offset + square_size * (y + 1),
+                                             fill=pink_neon)
+            elif self.nav_grid[x, y] == 'a':
+                self.canvas.create_rectangle(offset + square_size * x,
+                                             offset + square_size * y,
                                              offset + square_size * (x + 1),
-                                             fill=purple)
-            elif self.nav_grid.grid[y][x] == 'a':
-                self.canvas.create_rectangle(offset + square_size * y,
-                                             offset + square_size * x,
                                              offset + square_size * (y + 1),
+                                             fill=purple_light)
+            elif self.nav_grid[x, y] == 'b':
+                self.canvas.create_rectangle(offset + square_size * x,
+                                             offset + square_size * y,
                                              offset + square_size * (x + 1),
-                                             fill=purple)
-            elif self.nav_grid.grid[y][x] == 'b':
-                self.canvas.create_rectangle(offset + square_size * y,
-                                             offset + square_size * x,
                                              offset + square_size * (y + 1),
-                                             offset + square_size * (x + 1),
                                              fill=purple)
+        # Draw the start-point
+        self.canvas.create_rectangle(offset + square_size * self.nav_grid.start[0],
+                                offset + square_size * self.nav_grid.start[1],
+                                offset + square_size * (self.nav_grid.start[0] + 1),
+                                offset + square_size * (self.nav_grid.start[1] + 1), fill=white)
+        # Draw the goal
+        self.canvas.create_rectangle(offset + square_size * self.nav_grid.goal[0],
+                                offset + square_size * self.nav_grid.goal[1],
+                                offset + square_size * (self.nav_grid.goal[0] + 1),
+                                offset + square_size * (self.nav_grid.goal[1] + 1), fill=red)
 
     def calculate(self):
         """
