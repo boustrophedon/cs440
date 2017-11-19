@@ -86,6 +86,16 @@ class NavigationGrid:
         """ Returns True if point `p` is on a highway, False otherwise """
         return self[p] in (HIGHWAY, HTT_HIGHWAY)
 
+    def is_blocked(self, p):
+        return self[p] == BLOCKED
+
+    def path_cost(self, path):
+        """ Returns the total cost to traverse a sequence of points """
+        sum = 0
+        for p1,p2 in zip(path, path[1:]):
+            sum+=self.cost(p1,p2)
+        return sum
+
     def size(self):
         return (self.width, self.height)
 

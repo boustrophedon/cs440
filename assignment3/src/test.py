@@ -17,7 +17,7 @@ def test_search_nopath():
     print("Test search no path")
     grid = NavigationGrid(10, 10)
     grid.start = (0,0)
-    grid.goal = (0, 2)
+    grid.goal =  (0,2)
 
     grid[0,1] = BLOCKED
     grid[1,1] = BLOCKED
@@ -28,6 +28,7 @@ def test_search_nopath():
     if result is None:
         print("Test passed.")
     else:
+        print(grid.path_cost(result))
         print("Test failed, returned path:", ' '.join(map(str, result)))
 
 def test_search_neighbors():
@@ -118,19 +119,19 @@ def test_ucs_vs_a_star():
 
     search_ucs = GraphSearch(grid)
     search_euclidean = GraphSearch(grid, heuristic=euclidean_distance)
-    search_example = GraphSearch(grid, heuristic=example_heuristic)
 
     result_ucs = search_ucs.search()
-    result_example = search_example.search()
     result_euclidean = search_euclidean.search()
 
-    assert(result_ucs is not None)
-    assert(result_euclidean is not None)
-    assert(result_example is not None)
+    if result_ucs is None:
+        print("ucs result is None, serializing grid to ucs_result.txt")
+        with open("ucs_result.txt", "w") as f:
+            f.write(grid.serialize())
 
-    ucs_cost = path_cost(grid, result_ucs)
-    euclidean_cost = path_cost(grid, result_euclidean)
-    example_cost = path_cost(grid, result_example)
+    assert(result_euclidean is not None)
+
+    ucs_cost = grid.path_cost(result_ucs)
+    euclidean_cost = grid.path_cost(result_euclidean)
 
     if ucs_cost != euclidean_cost:
         print("UCS result:")
@@ -140,22 +141,8 @@ def test_ucs_vs_a_star():
         print("Costs, ucs, euclidean:")
         print(ucs_cost)
         print(euclidean_cost)
-    elif ucs_cost != example_cost:
-        print("UCS result:")
-        print(result_ucs)
-        print("Example result:")
-        print(result_example)
-        print("Costs, ucs, example:")
-        print(ucs_cost)
-        print(example_cost)
     else:
         print("Test passed")
-
-def path_cost(grid, path):
-    sum = 0
-    for p1,p2 in zip(path, path[1:]):
-        sum+=grid.cost(p1,p2)
-    return sum
 
 if __name__ == '__main__':
     test_search_nopath()

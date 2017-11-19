@@ -6,13 +6,8 @@ def empty_heuristic(start, goal):
     return 0
 
 def euclidean_distance(start, goal):
-    return sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
+    return 0.25*sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
 
-def example_heuristic(start, goal):
-    # I am not really sure what this is supposed to approximate
-    return sqrt(2) * min(abs(start[0] - goal[0]), abs(start[1] - goal[1])) \
-                   + max(abs(start[0] - goal[0]), abs(start[1] - goal[1])) \
-                   - min(abs(start[0] - goal[0]), abs(start[1] - goal[1]))
 
 class GraphSearch:
     """ Implements Weighted A* with parameters for heuristic and weight so that
@@ -39,7 +34,7 @@ class GraphSearch:
 
         # actually a heap
         fringe = list()
-        heappush(fringe, (0+self.heuristic(start, goal), start) )
+        heappush(fringe, self.weight*(0+self.heuristic(start, goal), start) )
 
         visited = set()
 
@@ -51,7 +46,11 @@ class GraphSearch:
                 return self.get_goal_path(preds)
             visited.add(curr)
             for neighbor, cost in self.grid.neighbors_with_costs(curr):
+
                 if neighbor in visited:
+                    continue
+                if self.grid.is_blocked(neighbor):
+                    visited.add(neighbor)
                     continue
 
                 if not in_heap(fringe, neighbor):
@@ -67,7 +66,8 @@ class GraphSearch:
 
                     remove_from_heap(fringe, neighbor)
 
-                    heappush(fringe, (shortest_to_neighbor + self.heuristic(neighbor, goal), neighbor)) 
+                    heappush(fringe, (shortest_to_neighbor + \
+                        self.weight*self.heuristic(neighbor, goal), neighbor)) 
 
         return None
 
