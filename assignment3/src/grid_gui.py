@@ -3,19 +3,29 @@ import tkinter.font as tkFont
 from tkinter import filedialog
 
 from grid_generator import *
+from graph_search import *
 
 square_size = 6
 
-light_green = '#66ff66'
-dark_green = '#006600'
 black = '#000000'
-light_brown = '#cc9900'
-dark_brown = '#663300'
-light_blue = '#38c9ff'
-dark_blue = '#1b74e8'
-neon_pink = '#e81be4'
-light_neon_pink = '#ff68fc'
+# Blue for rivers
+blue_light = '#38c9ff'
+blue_dark = '#1b74e8'
+brown_light = '#cc9900'
+brown_dark = '#663300'
+# Green for plains
+green_light = '#66ff66'
+green_dark = '#006600'
+# Pink for traversal over plains(?)
+pink_neon = '#e81be4'
+pink_neon_light = '#ff68fc'
+# Purple for traversal over rivers(?)
 purple = '#7f1ff4'
+purple_light=''
+# Red for goal
+red = '#ff0000'
+# White for start
+white='#ffffff'
 
 
 class MainApplication(tk.Frame):
@@ -42,6 +52,12 @@ class MainApplication(tk.Frame):
         self.y_e = tk.Entry(self.canvas, width=8)
         self.y_e.place(x=1000 + 165, y=150 - 10)
 
+        # Uniform cost search button
+        ufc_button = tk.Button(self.canvas, text="Uniform-Cost Search", command=self.calculate)
+
+        # A-star button
+
+
         # Calculate button
         #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
         calc_button = tk.Button(self.canvas, text="Calculate", command=self.calculate)
@@ -63,41 +79,51 @@ class MainApplication(tk.Frame):
         self.draw_map(self.canvas)
         self.illustrate_path()
 
-
     def draw_map(self, canvas):
         offset = 6
         for i in range(self.nav_grid.height):
             for j in range(self.nav_grid.width):
                 # Blocked, black
-                if self.nav_grid.grid[i][j] == '0':
+                if self.nav_grid[j, i] == '0':
                     canvas.create_rectangle(offset + square_size * j,
                                             offset + square_size * i,
                                             offset + square_size * (j + 1),
                                             offset + square_size * (i + 1), fill=black)
                 # Regular, light green
-                elif self.nav_grid.grid[i][j] == '1':
+                elif self.nav_grid[j, i] == '1':
                     canvas.create_rectangle(offset + square_size * j,
                                             offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=light_green)
+                                            offset + square_size * (i + 1), fill=green_light)
                 # Hard to traverse, dark green
-                elif self.nav_grid.grid[i][j] == '2':
+                elif self.nav_grid[j, i] == '2':
                     canvas.create_rectangle(offset + square_size * j,
                                             offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=dark_green)
+                                            offset + square_size * (i + 1), fill=green_dark)
                 # Regular with highway, light brown
-                elif self.nav_grid.grid[i][j] == 'a':
+                elif self.nav_grid[j, i] == 'a':
                     canvas.create_rectangle(offset + square_size * j,
                                             offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=light_blue)
+                                            offset + square_size * (i + 1), fill=blue_light)
                 # Hard to to traverse with highway
-                elif self.nav_grid.grid[i][j] == 'b':
+                elif self.nav_grid[j, i] == 'b':
                     canvas.create_rectangle(offset + square_size * j,
                                             offset + square_size * i,
                                             offset + square_size * (j + 1),
-                                            offset + square_size * (i + 1), fill=dark_blue)
+                                            offset + square_size * (i + 1), fill=blue_dark)
+        # Draw the start-point
+        canvas.create_rectangle(offset + square_size * self.nav_grid.start[0],
+                                offset + square_size * self.nav_grid.start[1],
+                                offset + square_size * (self.nav_grid.start[0] + 1),
+                                offset + square_size * (self.nav_grid.start[1] + 1), fill=white)
+        # Draw the goal
+        canvas.create_rectangle(offset + square_size * self.nav_grid.goal[0],
+                                offset + square_size * self.nav_grid.goal[1],
+                                offset + square_size * (self.nav_grid.goal[0] + 1),
+                                offset + square_size * (self.nav_grid.goal[1] + 1), fill=red)
+
 
     def illustrate_path(self):
         """
@@ -107,8 +133,9 @@ class MainApplication(tk.Frame):
         """
         offset = 6
         l = []
-        for i in range(100):
-            l.append((0, i))
+        #l = GraphSearch.get_goal_path()
+        for i in range(120):
+            l.append((i, i))
         for (x,y) in l:
             if self.nav_grid.grid[y][x] == '0':
                 self.canvas.create_rectangle(offset + square_size * y,
@@ -150,6 +177,7 @@ class MainApplication(tk.Frame):
         # Need to make sure integers are:
         # (1) parsed as integers
         # (2) within bounds
+        print(self.nav_grid.start, self.nav_grid.goal)
         if self.x_e.get() != '' and self.y_e.get() != '':
             result = int(self.x_e.get()) * int(self.y_e.get())
         # This is where we output the g, h and f values out
@@ -177,12 +205,14 @@ class MainApplication(tk.Frame):
         with open(sfile, 'w') as f:
             f.write(self.nav_grid.serialize())
 
+
 def run_gui():
     root = tk.Tk()
     app = MainApplication(root)
     app.pack(side="top", fill="both", expand=True)
     app.master.title("Grid GUI: Assignment #3")
     root.mainloop()
+
 
 if __name__ == "__main__":
     run_gui()
