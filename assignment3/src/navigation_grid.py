@@ -48,7 +48,6 @@ class NavigationGrid:
             t = int(t[0]), int(t[1])
             return t
 
-        array = None
         with open(file_name) as f:
             lines = f.readlines()
             start = tuple_from_line(lines[0])
@@ -69,8 +68,8 @@ class NavigationGrid:
             grid.start = start
             grid.goal = goal
             grid.htt_centers = centers
-
             return grid
+
 
     def get(self, x, y):
         return self[x, y]

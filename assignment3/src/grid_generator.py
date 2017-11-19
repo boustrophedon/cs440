@@ -171,7 +171,7 @@ class GridGenerator:
             y = (border[1] + yoffset) % self.height
 
             start = (x,y)
-            is_blocked = grid[start] is BLOCKED
+            is_blocked = grid.is_blocked(start)
         grid.start = start
     
     def select_goal(self, grid):
@@ -187,6 +187,6 @@ class GridGenerator:
             y = (border[1] + yoffset) % self.height
 
             goal = (x,y)
-            is_blocked = grid[goal] is BLOCKED
+            is_blocked = grid.is_blocked(goal)
             is_too_close = math.sqrt( (grid.start[0] - goal[0])**2 + (grid.start[1] - goal[1])**2) < 100
         grid.goal = goal
