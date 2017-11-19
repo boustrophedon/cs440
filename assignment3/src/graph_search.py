@@ -1,9 +1,18 @@
-from math import inf
+from math import inf,sqrt
 
 from heapq import *
 
 def empty_heuristic(start, goal):
     return 0
+
+def euclidean_distance(start, goal):
+    return sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
+
+def example_heuristic(start, goal):
+    # I am not really sure what this is supposed to approximate
+    return sqrt(2) * min(abs(start[0] - goal[0]), abs(start[1] - goal[1])) \
+                   + max(abs(start[0] - goal[0]), abs(start[1] - goal[1])) \
+                   - min(abs(start[0] - goal[0]), abs(start[1] - goal[1]))
 
 class GraphSearch:
     """ Implements Weighted A* with parameters for heuristic and weight so that
@@ -15,7 +24,6 @@ class GraphSearch:
         self.weight = weight
         self.heuristic = heuristic
 
-        self.cost_from_start = dict() # 'g()'
 
     def search(self):
         """ Returns a list of coordinates representing the best path found by
@@ -24,7 +32,8 @@ class GraphSearch:
         begins at goal and ends at start."""
         start = self.grid.start
         goal = self.grid.goal
-        self.cost_from_start[start] = 0
+        cost_from_start = dict() # 'g()'
+        cost_from_start[start] = 0
         preds = dict()
         preds[start] = None
 
@@ -46,15 +55,15 @@ class GraphSearch:
                     continue
 
                 if not in_heap(fringe, neighbor):
-                    self.cost_from_start[neighbor] = inf
+                    cost_from_start[neighbor] = inf
                     preds[neighbor] = None
 
-                shortest_to_neighbor = self.cost_from_start[curr] + cost
-                if shortest_to_neighbor >= self.cost_from_start[neighbor]:
+                shortest_to_neighbor = cost_from_start[curr] + cost
+                if shortest_to_neighbor >= cost_from_start[neighbor]:
                     continue
                 else:
                     preds[neighbor] = curr
-                    self.cost_from_start[neighbor] = shortest_to_neighbor
+                    cost_from_start[neighbor] = shortest_to_neighbor
 
                     remove_from_heap(fringe, neighbor)
 
