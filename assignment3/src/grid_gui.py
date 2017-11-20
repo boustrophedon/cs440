@@ -66,12 +66,13 @@ class MainApplication(tk.Frame):
         a_star_button.place(x=1000 + 40+20, y=50)
 
         # Weighted A-star button
-        wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search", \
-                                      command=lambda: self.illustrate_path(3,5))#, weight=5))
-        wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
-        self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
         self.weight_e = tk.Entry(self.canvas, width=8)
         self.weight_e.place(x=1000 + 40 + 40, y=120)
+        wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search", \
+                                      command=lambda: self.illustrate_path(3))#, weight=5))
+        wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
+        self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
+
 
         # Calculate button
         #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
@@ -139,7 +140,7 @@ class MainApplication(tk.Frame):
                                 offset + square_size * (self.nav_grid.goal[0] + 1),
                                 offset + square_size * (self.nav_grid.goal[1] + 1), fill=red)
 
-    def illustrate_path(self, type, *vargs):
+    def illustrate_path(self, *vargs):
         """
         Need to redo this implementation
         :param type: 1 if ucs, 2 if astar, 3 if weighted astar, 4 if sequential astar
@@ -148,20 +149,24 @@ class MainApplication(tk.Frame):
         offset = 6
         l = []
         search = None
-        if type is 1:
+        if vargs[0] is 1:
             print("Uniform Cost Search")
             search = GraphSearch(self.nav_grid)
-        elif type is 2:
+        elif vargs[0] is 2:
             print("A* Search")
             search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
-        elif type is 3:
+        elif vargs[0] is 3:
             #for arg in vargs:
                 #print(arg)
             #print(vargs[0])
             print("Weighted A* Search, w:= " + str(vargs[0]))
             # search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(vargs[0]))
-            search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
-            search.weight = int(vargs[0])
+            if self.weight_e.get() is '':
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=1)
+            else:
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(self.weight_e.get()))
+
+            #search.weight = int(vargs[0])
         if search is None:
             return
         l = search.search()
