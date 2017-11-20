@@ -148,7 +148,7 @@ def test_weighted_a_star():
     print("Test weighted A*")
     grid = GridGenerator(width=120, height=100).gen_grid()
     search_ucs = GraphSearch(grid)
-    search_weighted = GraphSearch(grid, heuristic=euclidean_distance)
+    search_weighted = GraphSearch(grid, heuristic=euclidean_distance, weight = 5)
 
     result_ucs = search_ucs.search()
     result_weighted = search_weighted.search()
@@ -158,6 +158,8 @@ def test_weighted_a_star():
     weighted_cost = grid.path_cost(result_weighted)
 
     assert(weighted_cost <= 5*ucs_cost)
+    print("weighted cost:", weighted_cost)
+    print("ucs cost:", ucs_cost)
 
     print("Test passed")
 if __name__ == '__main__':

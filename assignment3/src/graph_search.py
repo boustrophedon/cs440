@@ -14,7 +14,7 @@ class GraphSearch:
     it collapses to regular A* with weight = 1 and Dijkstra's with heuristic
     constant 0. The heuristic function is only passed in the current
     coordinates and the goal coordinates."""
-    def __init__(self, grid, weight=1, heuristic=empty_heuristic):
+    def __init__(self, grid, heuristic=empty_heuristic, weight=1):
         self.grid = grid
         self.weight = weight
         self.heuristic = heuristic
@@ -34,7 +34,7 @@ class GraphSearch:
 
         # actually a heap
         fringe = list()
-        heappush(fringe, self.weight*(0+self.heuristic(start, goal), start) )
+        heappush(fringe, (0+self.heuristic(start, goal)*self.weight, start) )
 
         visited = set()
 
