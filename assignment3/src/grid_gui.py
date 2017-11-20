@@ -69,7 +69,7 @@ class MainApplication(tk.Frame):
         self.weight_e = tk.Entry(self.canvas, width=8)
         self.weight_e.place(x=1000 + 40 + 40, y=120)
         wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search", \
-                                      command=lambda: self.illustrate_path(3))#, weight=5))
+                                      command=lambda: self.illustrate_path(3, int(self.weight_e.get())))#, weight=5))
         wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
         self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
 
@@ -159,12 +159,12 @@ class MainApplication(tk.Frame):
             #for arg in vargs:
                 #print(arg)
             #print(vargs[0])
-            print("Weighted A* Search, w:= " + str(vargs[0]))
+            print("Weighted A* Search, w:= " + str(vargs[1]))
             # search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(vargs[0]))
             if self.weight_e.get() is '':
                 search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=1)
             else:
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(self.weight_e.get()))
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
 
             #search.weight = int(vargs[0])
         if search is None:
@@ -236,7 +236,7 @@ class MainApplication(tk.Frame):
         name = tk.filedialog.askopenfile(title="Open file...")
         # name = tk.filedialog.askopenfile(filetypes=(("Text file", "*.txt"), ("All file types", "*.*")), title="Open file...")
         if not name:
-            pass
+            return
         print(name.name)
         self.nav_grid = NavigationGrid.from_file(name.name)
         self.refresh()
@@ -244,7 +244,7 @@ class MainApplication(tk.Frame):
     def save_file(self):
         sfile = tk.filedialog.asksaveasfilename(title="Save file as...")
         if not sfile:
-            pass
+            return
         print(sfile)
         with open(sfile, 'w') as f:
             f.write(self.nav_grid.serialize())
