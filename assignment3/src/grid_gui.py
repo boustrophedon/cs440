@@ -19,6 +19,7 @@ green_dark = '#006600'
 # Pink for traversal over plains(?)
 pink_neon = '#e81be4'
 pink_neon_light = '#ff68fc'
+
 # Purple for traversal over rivers(?)
 purple = '#5600ba'
 # 5000ad    #7700ff
@@ -27,6 +28,9 @@ purple_light='#a544ff'
 red = '#ff0000'
 # White for start
 white='#ffffff'
+# Yell for traversal over plains(?)
+yellow = '#ffe247'
+yellow_see_doctor = '#967f00'
 
 
 class MainApplication(tk.Frame):
@@ -41,9 +45,9 @@ class MainApplication(tk.Frame):
         self.canvas.pack()
 
         self.canvas.create_text(1000 + 50 + 40, 80 + 200, text="h:\ng:\nf:", font=customFont)
-        self.h_out = self.canvas.create_text(1000 + 80 + 40, 52 + 200, text="", font=customFont)
-        self.g_out = self.canvas.create_text(1000 + 80 + 40, 81 + 200, text="", font=customFont)
-        self.f_out = self.canvas.create_text(1000 + 80 + 40, 107 + 200, text="", font=customFont)
+        self.h_out = self.canvas.create_text(1000 + 80 + 40 + 20, 52 + 200, text="", font=customFont)
+        self.g_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 81 + 200, text="", font=customFont)
+        self.f_out = self.canvas.create_text(1000 + 80 + 40 + 20, 107 + 200, text="", font=customFont)
 
         # Taking in x and y coordinates for the grid
         self.canvas.create_text(1000, 150 + 200, text="x:", font=customFont)
@@ -172,13 +176,13 @@ class MainApplication(tk.Frame):
                                              offset + square_size * y,
                                              offset + square_size * (x + 1),
                                              offset + square_size * (y + 1),
-                                             fill=pink_neon_light)
+                                             fill=yellow)
             elif self.nav_grid[x, y] == '2':
                 self.canvas.create_rectangle(offset + square_size * x,
                                              offset + square_size * y,
                                              offset + square_size * (x + 1),
                                              offset + square_size * (y + 1),
-                                             fill=pink_neon)
+                                             fill=yellow_see_doctor)
             elif self.nav_grid[x, y] == 'a':
                 self.canvas.create_rectangle(offset + square_size * x,
                                              offset + square_size * y,
@@ -213,7 +217,8 @@ class MainApplication(tk.Frame):
         # (2) within bounds
         print(self.nav_grid.start, self.nav_grid.goal)
         if self.x_e.get() != '' and self.y_e.get() != '':
-            result = int(self.x_e.get()) * int(self.y_e.get())
+            # This is where we need to do math
+            result = (int(self.x_e.get()) , int(self.y_e.get()))
         # This is where we output the g, h and f values out
         self.canvas.itemconfigure(self.g_out, text=str(result))
         self.canvas.itemconfigure(self.h_out, text=str(result))
