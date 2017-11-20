@@ -40,45 +40,55 @@ class MainApplication(tk.Frame):
 
         self.canvas.pack()
 
-        self.canvas.create_text(1000 + 50 + 40, 80, text="h:\ng:\nf:", font=customFont)
-        self.h_out = self.canvas.create_text(1000 + 80 + 40, 52, text="", font=customFont)
-        self.g_out = self.canvas.create_text(1000 + 80 + 40, 81, text="", font=customFont)
-        self.f_out = self.canvas.create_text(1000 + 80 + 40, 107, text="", font=customFont)
+        self.canvas.create_text(1000 + 50 + 40, 80 + 200, text="h:\ng:\nf:", font=customFont)
+        self.h_out = self.canvas.create_text(1000 + 80 + 40, 52 + 200, text="", font=customFont)
+        self.g_out = self.canvas.create_text(1000 + 80 + 40, 81 + 200, text="", font=customFont)
+        self.f_out = self.canvas.create_text(1000 + 80 + 40, 107 + 200, text="", font=customFont)
 
         # Taking in x and y coordinates for the grid
-        self.canvas.create_text(1000, 150, text="x:", font=customFont)
+        self.canvas.create_text(1000, 150 + 200, text="x:", font=customFont)
         self.x_e = tk.Entry(self.canvas, width=8)
-        self.x_e.place(x=1000 + 20, y=150 - 10)
-        self.canvas.create_text(1000 + 145, 150, text="y:", font=customFont)
+        self.x_e.place(x=1000 + 20, y=150 - 10 + 200)
+        self.canvas.create_text(1000 + 145, 150 + 200, text="y:", font=customFont)
         self.y_e = tk.Entry(self.canvas, width=8)
-        self.y_e.place(x=1000 + 165, y=150 - 10)
+        self.y_e.place(x=1000 + 165, y=150 - 10 + 200)
 
         # Uniform cost search button
-        ufc_button = tk.Button(self.canvas, text="Uniform-Cost Search", command=self.calculate)
+        ufc_button = tk.Button(self.canvas, text="Uniform-Cost Search", command=lambda: self.illustrate_path(1))
+        ufc_button.place(x=1000 + 40 - 10, y=20)
 
         # A-star button
+        a_star_button = tk.Button(self.canvas, text="A* Search", command=lambda: self.illustrate_path(2))
+        a_star_button.place(x=1000 + 40+20, y=50)
 
+        # Weighted A-star button
+        wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search", \
+                                      command=lambda: self.illustrate_path(3,5))#, weight=5))
+        wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
+        self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
+        self.weight_e = tk.Entry(self.canvas, width=8)
+        self.weight_e.place(x=1000 + 40 + 40, y=120)
 
         # Calculate button
         #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
         calc_button = tk.Button(self.canvas, text="Calculate", command=self.calculate)
 
-        calc_button.place(x=1000 + 30 + 40 + 10, y=200)
+        calc_button.place(x=1080, y=200 + 200)
 
         # Open file button
         #open_button = tk.Button(self.canvas, height=5, width=20, text="Open file", command=self.open_file)
         open_button = tk.Button(self.canvas, text="Open file", command=self.open_file)
-        open_button.place(x=1000 + 30 + 50, y=200 + 60)
+        open_button.place(x=1080, y=200 + 60 + 200)
 
         # Save file button
         save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
-        save_button.place(x=1000 + 30 + 50, y=200 + 90 + 30)
+        save_button.place(x=1080, y=200 + 90 + 30 + 200)
 
         self.refresh()
 
     def refresh(self):
         self.draw_map(self.canvas)
-        self.illustrate_path()
+        #self.illustrate_path()
 
     def draw_map(self, canvas):
         offset = 6
@@ -125,17 +135,32 @@ class MainApplication(tk.Frame):
                                 offset + square_size * (self.nav_grid.goal[0] + 1),
                                 offset + square_size * (self.nav_grid.goal[1] + 1), fill=red)
 
-
-    def illustrate_path(self):
+    def illustrate_path(self, type, *vargs):
         """
-        :param start: the startpoint
-        :param end: the endpoint
+        Need to redo this implementation
+        :param type: 1 if ucs, 2 if astar, 3 if weighted astar, 4 if sequential astar
         :return:
         """
         offset = 6
         l = []
-        ucs_search = GraphSearch(self.nav_grid)
-        l = ucs_search.search()
+        search = None
+        if type is 1:
+            print("Uniform Cost Search")
+            search = GraphSearch(self.nav_grid)
+        elif type is 2:
+            print("A* Search")
+            search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+        elif type is 3:
+            #for arg in vargs:
+                #print(arg)
+            #print(vargs[0])
+            print("Weighted A* Search, w:= " + str(vargs[0]))
+            # search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(vargs[0]))
+            search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+            search.weight = int(vargs[0])
+        if search is None:
+            return
+        l = search.search()
         print(l)
         '''
         for i in range(120):
