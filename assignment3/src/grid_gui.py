@@ -160,18 +160,31 @@ class MainApplication(tk.Frame):
             search = GraphSearch(self.nav_grid)
         elif vargs[0] is 2:
             print("A* Search")
-            search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+            print(self.heuristic_spinbox.get())
+            # TODO: More heuristics, NOT COMPLETE
+            # Adding spinbox functionality
+            if self.heuristic_spinbox.get() == 'Euclidean':
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+            else:
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+
         elif vargs[0] is 3:
-            #for arg in vargs:
-                #print(arg)
-            #print(vargs[0])
             print("Weighted A* Search, w:= " + str(vargs[1]))
-            # search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=int(vargs[0]))
-            if self.weight_e.get() is '':
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=1)
+            print(self.heuristic_spinbox.get())
+            # TODO: More heuristics, NOT COMPLETE
+            # Adding spinbox functionality
+            if self.heuristic_spinbox.get() == 'Euclidean':
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
             else:
                 search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
-
+            '''
+            if self.weight_e.get() is '' and self.heuristic_spinbox.get() is 'Euclidean':
+                print("here")
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=1)
+            elif self.heuristic_spinbox.get() == 'Euclidean':
+                print("here2")
+                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+            '''
             #search.weight = int(vargs[0])
         if search is None:
             return
