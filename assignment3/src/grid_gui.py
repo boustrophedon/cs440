@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import filedialog
+from tkinter import *
 
 from grid_generator import *
 from graph_search import *
@@ -45,9 +46,9 @@ class MainApplication(tk.Frame):
         self.canvas.pack()
 
         self.canvas.create_text(1000 + 50 + 40, 80 + 200, text="h:\ng:\nf:", font=customFont)
-        self.h_out = self.canvas.create_text(1000 + 80 + 40 + 20, 52 + 200, text="", font=customFont)
+        self.h_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 52 + 200, text="", font=customFont)
         self.g_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 81 + 200, text="", font=customFont)
-        self.f_out = self.canvas.create_text(1000 + 80 + 40 + 20, 107 + 200, text="", font=customFont)
+        self.f_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 107 + 200, text="", font=customFont)
 
         # Taking in x and y coordinates for the grid
         self.canvas.create_text(1000, 150 + 200, text="x:", font=customFont)
@@ -66,9 +67,11 @@ class MainApplication(tk.Frame):
         a_star_button.place(x=1000 + 40+20, y=50)
 
         # Weighted A-star button
-        self.weight_e = tk.Entry(self.canvas, width=8)
+        tvar = StringVar()
+        tvar.set("1")
+        self.weight_e = tk.Entry(self.canvas, width=8, textvariable=tvar)
         self.weight_e.place(x=1000 + 40 + 40, y=120)
-        wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search", \
+        wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search",
                                       command=lambda: self.illustrate_path(3, int(self.weight_e.get())))#, weight=5))
         wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
         self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
@@ -88,6 +91,9 @@ class MainApplication(tk.Frame):
         # Save file button
         save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
         save_button.place(x=1080, y=200 + 90 + 30 + 200)
+
+        self.heuristic_spinbox = Spinbox(self.canvas, values=('Euclidean squared', 'Euclidean'))
+        self.heuristic_spinbox.place(x=1080-40, y=170)
 
         self.refresh()
 
@@ -171,11 +177,8 @@ class MainApplication(tk.Frame):
             return
         l = search.search()
         print(l)
-        '''
-        for i in range(120):
-            l.append((i, i))
-        '''
-        for (x,y) in l:
+        self.draw_map(self.canvas)
+        for (x, y) in l:
             if self.nav_grid[x, y] == '1':
                 self.canvas.create_rectangle(offset + square_size * x,
                                              offset + square_size * y,
