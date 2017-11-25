@@ -1,5 +1,7 @@
 from math import inf,sqrt
 
+from collections import defaultdict
+
 from heapq import *
 
 def empty_heuristic(start, goal):
@@ -19,6 +21,12 @@ class GraphSearch:
         self.weight = weight
         self.heuristic = heuristic
 
+        # g() values
+        self.cost_from_start = defaultdict(lambda: inf)
+
+        # predecessors mapping used to find optimal path after search
+        self.preds = defaultdict(lambda: None)
+
 
     def search(self):
         """ Returns a list of coordinates representing the best path found by
@@ -27,10 +35,7 @@ class GraphSearch:
         begins at goal and ends at start."""
         start = self.grid.start
         goal = self.grid.goal
-        cost_from_start = dict() # 'g()'
-        cost_from_start[start] = 0
-        preds = dict()
-        preds[start] = None
+        self.cost_from_start[start] = 0
 
         # actually a heap
         fringe = list()
@@ -43,7 +48,7 @@ class GraphSearch:
             f, curr = heappop(fringe)
 
             if curr == goal:
-                return self.get_goal_path(preds)
+                return self.get_goal_path()
             visited.add(curr)
             for neighbor, cost in self.grid.neighbors_with_costs(curr):
 
@@ -53,16 +58,12 @@ class GraphSearch:
                     visited.add(neighbor)
                     continue
 
-                if not in_heap(fringe, neighbor):
-                    cost_from_start[neighbor] = inf
-                    preds[neighbor] = None
-
-                shortest_to_neighbor = cost_from_start[curr] + cost
-                if shortest_to_neighbor >= cost_from_start[neighbor]:
+                shortest_to_neighbor = self.cost_from_start[curr] + cost
+                if shortest_to_neighbor >= self.cost_from_start[neighbor]:
                     continue
                 else:
-                    preds[neighbor] = curr
-                    cost_from_start[neighbor] = shortest_to_neighbor
+                    self.preds[neighbor] = curr
+                    self.cost_from_start[neighbor] = shortest_to_neighbor
 
                     remove_from_heap(fringe, neighbor)
 
@@ -71,12 +72,12 @@ class GraphSearch:
 
         return None
 
-    def get_goal_path(self, preds):
+    def get_goal_path(self):
         path = [self.grid.goal,]
-        current = preds[self.grid.goal]
+        current = self.preds[self.grid.goal]
         while current is not None:
             path.append(current)
-            current = preds[current]
+            current = self.preds[current]
         return path
 
 # TODO use/implement treap instead of heapq to get logn removes?
