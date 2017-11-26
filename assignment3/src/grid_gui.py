@@ -263,11 +263,12 @@ class MainApplication(tk.Frame):
         # This is where we output the g, h and f values out
             g_x, g_y = int(self.x_e.get()), int(self.y_e.get())
 
-            g_value = self.search.cost_from_start.get((g_x,g_y))
-            # print((int(self.x_e.get()), int(self.y_e.get())) in self.search.cost_from_start)
+            g_value = self.search.cost_from_start[(g_x,g_y)]
+            h_value = self.search.heuristic((g_x,g_y), self.nav_grid.goal)
+            f_value = h_value + g_value
             self.canvas.itemconfigure(self.g_out, text=str("%.2f" % g_value))
-            self.canvas.itemconfigure(self.h_out, text=str(result))
-            self.canvas.itemconfigure(self.f_out, text=str(result))
+            self.canvas.itemconfigure(self.h_out, text=str("%.2f" % h_value))
+            self.canvas.itemconfigure(self.f_out, text=str("%.2f" % f_value))
         # Might include a time output at some other time
         return result
 
