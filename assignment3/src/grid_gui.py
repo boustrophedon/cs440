@@ -73,7 +73,7 @@ class MainApplication(tk.Frame):
         self.weight_e = tk.Entry(self.canvas, width=8, textvariable=tvar)
         self.weight_e.place(x=1000 + 40 + 40, y=120)
         wtd_a_star_button = tk.Button(self.canvas, text="Weighted A* Search",
-                                      command=lambda: self.illustrate_path(3, int(self.weight_e.get())))#, weight=5))
+                                      command=lambda: self.illustrate_path(3, float(self.weight_e.get())))#, weight=5))
         wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
         self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
 
