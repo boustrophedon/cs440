@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import filedialog
 from tkinter import *
-from decimal import *
+import time
 
 from grid_generator import *
 from graph_search import *
@@ -103,6 +103,9 @@ class MainApplication(tk.Frame):
 
         self.search = None
 
+        self.canvas.create_text(1050 + 20, 400 + 200, text="Time elapsed:", font=customFont)
+        self.time = self.canvas.create_text(1070, 400 + 250, text="", font=customFont)
+
         self.refresh()
 
     def refresh(self):
@@ -162,10 +165,10 @@ class MainApplication(tk.Frame):
         """
         offset = 6
         l = []
-        search = None
+        self.search = None
         if vargs[0] is 1:
             print("Uniform Cost Search")
-            search = GraphSearch(self.nav_grid)
+            self.search = GraphSearch(self.nav_grid)
         elif vargs[0] is 2:
             print("A* Search")
             print(self.heuristic_spinbox.get())
@@ -208,7 +211,11 @@ class MainApplication(tk.Frame):
                 self.search = GraphSearch(self.nav_grid, heuristic=empty_heuristic)
         if self.search is None:
             return
+        time_elapsed = time.time()
         l = self.search.search()
+        time_elapsed = time.time() - time_elapsed
+        self.canvas.itemconfigure(self.time, text=str("%.8f s" % time_elapsed))
+        print(time_elapsed)
         print(l)
         self.draw_map(self.canvas)
         for (x, y) in l:
