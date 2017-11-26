@@ -93,7 +93,11 @@ class MainApplication(tk.Frame):
         save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
         save_button.place(x=1080, y=200 + 90 + 30 + 200)
 
-        self.heuristic_spinbox = Spinbox(self.canvas, values=('Euclidean squared', 'Euclidean'))
+        self.heuristic_spinbox = Spinbox(self.canvas, values=('Manhattan',
+                                                              'Distance squared',
+                                                              'Euclidean',
+                                                              'Chebyshev',
+                                                              'Chebyshev (admissible)'))
         self.heuristic_spinbox.place(x=1080-40, y=170)
 
         self.search = None
@@ -166,20 +170,37 @@ class MainApplication(tk.Frame):
             print(self.heuristic_spinbox.get())
             # TODO: More heuristics, NOT COMPLETE
             # Adding spinbox functionality
-            if self.heuristic_spinbox.get() == 'Euclidean':
+            if self.heuristic_spinbox.get() == 'Manhattan':
+                self.search = GraphSearch(self.nav_grid, heuristic=manhattan)
+            elif self.heuristic_spinbox.get() == 'Euclidean':
                 self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+            elif self.heuristic_spinbox.get() == 'Distance squared':
+                self.search = GraphSearch(self.nav_grid, heuristic=dist_squared)
+            elif self.heuristic_spinbox.get() == 'Chebyshev':
+                self.search = GraphSearch(self.nav_grid, heuristic=chebyshev)
+            elif self.heuristic_spinbox.get() == 'Chebyshev (admissible)':
+                self.search = GraphSearch(self.nav_grid, heuristic=chebyshev_admissible)
             else:
-                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+                self.search = GraphSearch(self.nav_grid, heuristic=empty_heuristic)
 
         elif vargs[0] is 3:
             print("Weighted A* Search, w:= " + str(vargs[1]))
             print(self.heuristic_spinbox.get())
             # TODO: More heuristics, NOT COMPLETE
+            # Hans: Seems complete
             # Adding spinbox functionality
-            if self.heuristic_spinbox.get() == 'Euclidean':
+            if self.heuristic_spinbox.get() == 'Manhattan':
+                self.search = GraphSearch(self.nav_grid, heuristic=manhattan, weight=vargs[1])
+            elif self.heuristic_spinbox.get() == 'Euclidean':
                 self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+            elif self.heuristic_spinbox.get() == 'Distance squared':
+                self.search = GraphSearch(self.nav_grid, heuristic=dist_squared, weight=vargs[1])
+            elif self.heuristic_spinbox.get() == 'Chebyshev':
+                self.search = GraphSearch(self.nav_grid, heuristic=chebyshev, weight=vargs[1])
+            elif self.heuristic_spinbox.get() == 'Chebyshev (admissible)':
+                self.search = GraphSearch(self.nav_grid, heuristic=chebyshev_admissible, weight=vargs[1])
             else:
-                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+                self.search = GraphSearch(self.nav_grid, heuristic=empty_heuristic)
             '''
             if self.weight_e.get() is '' and self.heuristic_spinbox.get() is 'Euclidean':
                 print("here")
