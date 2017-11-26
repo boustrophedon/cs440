@@ -162,6 +162,29 @@ def test_weighted_a_star():
     print("ucs cost:", ucs_cost)
 
     print("Test passed")
+
+def test_chebyshev_heuristic():
+    print("Test chebyshev admissible heuristic")
+    grid = GridGenerator(width=120, height=100).gen_grid()
+    search_ucs = GraphSearch(grid)
+    search_chebyshev = GraphSearch(grid, heuristic=chebyshev)
+    search_chebyshev_adm = GraphSearch(grid, heuristic=chebyshev_admissible)
+
+    result_ucs = search_ucs.search()
+    result_chebyshev = search_chebyshev.search()
+    result_chebyshev_adm = search_chebyshev_adm.search()
+
+    assert(result_chebyshev is not None)
+    ucs_cost = grid.path_cost(result_ucs)
+    chebyshev_cost = grid.path_cost(result_chebyshev)
+    chebyshev_adm_cost = grid.path_cost(result_chebyshev_adm)
+
+    assert(ucs_cost < chebyshev_cost)
+
+    assert(ucs_cost == chebyshev_adm_cost)
+
+    print("Test passed")
+
 if __name__ == '__main__':
     test_search_nopath()
     print()
@@ -176,4 +199,6 @@ if __name__ == '__main__':
     test_ucs_vs_a_star()
     print()
     test_weighted_a_star()
+    print()
+    test_chebyshev_heuristic()
     print()

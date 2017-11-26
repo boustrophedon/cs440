@@ -8,8 +8,28 @@ def empty_heuristic(start, goal):
     return 0
 
 def euclidean_distance(start, goal):
+    # this metric is an admissible heuristic
+    # smallest cost to move between squares is 0.25 * the distance
     return 0.25*sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
 
+def dist_squared(start, goal):
+    # this works as a heuristic because it's cheap to calculate and tells us
+    # the right direction but it is not admissible because it doesn't take into
+    # account highways, which lower the possible cost
+    return (start[0] - goal[0])**2 + (start[1] - goal[1])**2
+
+def manhattan(start, goal):
+    # distance if we only move l/r/u/d, not taking into account highways
+    return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
+
+def chebyshev(start, goal):
+    dx = start[0] - goal[0]
+    dy = start[1] - goal[1]
+
+    return max(dx, dy) + (sqrt(2)-1) * min(dx, dy)
+
+def chebyshev_admissible(start, goal):
+    return 0.25*chebyshev(start, goal)
 
 class GraphSearch:
     """ Implements Weighted A* with parameters for heuristic and weight so that
