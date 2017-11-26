@@ -118,7 +118,7 @@ def test_ucs_vs_a_star():
     grid = GridGenerator(width=120, height=100).gen_grid()
 
     search_ucs = GraphSearch(grid)
-    search_euclidean = GraphSearch(grid, heuristic=euclidean_distance)
+    search_euclidean = GraphSearch(grid, heuristic=euclidean_admissible)
 
     result_ucs = search_ucs.search()
     result_euclidean = search_euclidean.search()
@@ -148,7 +148,7 @@ def test_weighted_a_star():
     print("Test weighted A*")
     grid = GridGenerator(width=120, height=100).gen_grid()
     search_ucs = GraphSearch(grid)
-    search_weighted = GraphSearch(grid, heuristic=euclidean_distance, weight = 5)
+    search_weighted = GraphSearch(grid, heuristic=euclidean_admissible, weight = 5)
 
     result_ucs = search_ucs.search()
     result_weighted = search_weighted.search()

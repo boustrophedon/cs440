@@ -96,6 +96,7 @@ class MainApplication(tk.Frame):
         self.heuristic_spinbox = Spinbox(self.canvas, values=('Manhattan',
                                                               'Distance squared',
                                                               'Euclidean',
+                                                              'Euclidean (admissible)',
                                                               'Chebyshev',
                                                               'Chebyshev (admissible)'))
         self.heuristic_spinbox.place(x=1080-40, y=170)
@@ -173,7 +174,9 @@ class MainApplication(tk.Frame):
             if self.heuristic_spinbox.get() == 'Manhattan':
                 self.search = GraphSearch(self.nav_grid, heuristic=manhattan)
             elif self.heuristic_spinbox.get() == 'Euclidean':
-                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean)
+            elif self.heuristic_spinbox.get() == 'Euclidean (admissible)':
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_admissible)
             elif self.heuristic_spinbox.get() == 'Distance squared':
                 self.search = GraphSearch(self.nav_grid, heuristic=dist_squared)
             elif self.heuristic_spinbox.get() == 'Chebyshev':
@@ -192,7 +195,9 @@ class MainApplication(tk.Frame):
             if self.heuristic_spinbox.get() == 'Manhattan':
                 self.search = GraphSearch(self.nav_grid, heuristic=manhattan, weight=vargs[1])
             elif self.heuristic_spinbox.get() == 'Euclidean':
-                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean, weight=vargs[1])
+            elif self.heuristic_spinbox.get() == 'Euclidean (admissible)':
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_admissible, weight=vargs[1])
             elif self.heuristic_spinbox.get() == 'Distance squared':
                 self.search = GraphSearch(self.nav_grid, heuristic=dist_squared, weight=vargs[1])
             elif self.heuristic_spinbox.get() == 'Chebyshev':
@@ -201,15 +206,6 @@ class MainApplication(tk.Frame):
                 self.search = GraphSearch(self.nav_grid, heuristic=chebyshev_admissible, weight=vargs[1])
             else:
                 self.search = GraphSearch(self.nav_grid, heuristic=empty_heuristic)
-            '''
-            if self.weight_e.get() is '' and self.heuristic_spinbox.get() is 'Euclidean':
-                print("here")
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=1)
-            elif self.heuristic_spinbox.get() == 'Euclidean':
-                print("here2")
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
-            '''
-            #search.weight = int(vargs[0])
         if self.search is None:
             return
         l = self.search.search()

@@ -7,10 +7,11 @@ from heapq import *
 def empty_heuristic(start, goal):
     return 0
 
-def euclidean_distance(start, goal):
-    # this metric is an admissible heuristic
-    # smallest cost to move between squares is 0.25 * the distance
-    return 0.25*sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
+def euclidean(start, goal):
+    return sqrt( (start[0] - goal[0])**2 + (start[1] - goal[1])**2 )
+
+def euclidean_admissible(start, goal):
+    return 0.25*euclidean(start, goal)
 
 def dist_squared(start, goal):
     # this works as a heuristic because it's cheap to calculate and tells us
