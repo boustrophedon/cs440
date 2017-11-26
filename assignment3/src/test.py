@@ -179,7 +179,7 @@ def test_chebyshev_heuristic():
     chebyshev_cost = grid.path_cost(result_chebyshev)
     chebyshev_adm_cost = grid.path_cost(result_chebyshev_adm)
 
-    assert(ucs_cost < chebyshev_cost)
+    assert(ucs_cost <= chebyshev_cost)
 
     assert(ucs_cost == chebyshev_adm_cost)
 
