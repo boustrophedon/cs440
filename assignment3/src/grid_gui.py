@@ -261,13 +261,13 @@ class MainApplication(tk.Frame):
             # This is where we need to do math
             result = (int(self.x_e.get()) , int(self.y_e.get()))
         # This is where we output the g, h and f values out
-        x, y = self.x_e.get(), self.y_e.get()
-        x, y = int(x), int(y)
-        g_value = self.search.cost_from_start.get((x,y))
-        # print((int(self.x_e.get()), int(self.y_e.get())) in self.search.cost_from_start)
-        self.canvas.itemconfigure(self.g_out, text=str("%.2f" % g_value))
-        self.canvas.itemconfigure(self.h_out, text=str(result))
-        self.canvas.itemconfigure(self.f_out, text=str(result))
+            g_x, g_y = int(self.x_e.get()), int(self.y_e.get())
+
+            g_value = self.search.cost_from_start.get((g_x,g_y))
+            # print((int(self.x_e.get()), int(self.y_e.get())) in self.search.cost_from_start)
+            self.canvas.itemconfigure(self.g_out, text=str("%.2f" % g_value))
+            self.canvas.itemconfigure(self.h_out, text=str(result))
+            self.canvas.itemconfigure(self.f_out, text=str(result))
         # Might include a time output at some other time
         return result
 
