@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import filedialog
 from tkinter import *
+from decimal import *
 
 from grid_generator import *
 from graph_search import *
@@ -95,6 +96,8 @@ class MainApplication(tk.Frame):
         self.heuristic_spinbox = Spinbox(self.canvas, values=('Euclidean squared', 'Euclidean'))
         self.heuristic_spinbox.place(x=1080-40, y=170)
 
+        self.search = None
+
         self.refresh()
 
     def refresh(self):
@@ -164,9 +167,9 @@ class MainApplication(tk.Frame):
             # TODO: More heuristics, NOT COMPLETE
             # Adding spinbox functionality
             if self.heuristic_spinbox.get() == 'Euclidean':
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
             else:
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance)
 
         elif vargs[0] is 3:
             print("Weighted A* Search, w:= " + str(vargs[1]))
@@ -174,9 +177,9 @@ class MainApplication(tk.Frame):
             # TODO: More heuristics, NOT COMPLETE
             # Adding spinbox functionality
             if self.heuristic_spinbox.get() == 'Euclidean':
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
             else:
-                search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
+                self.search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
             '''
             if self.weight_e.get() is '' and self.heuristic_spinbox.get() is 'Euclidean':
                 print("here")
@@ -186,9 +189,9 @@ class MainApplication(tk.Frame):
                 search = GraphSearch(self.nav_grid, heuristic=euclidean_distance, weight=vargs[1])
             '''
             #search.weight = int(vargs[0])
-        if search is None:
+        if self.search is None:
             return
-        l = search.search()
+        l = self.search.search()
         print(l)
         self.draw_map(self.canvas)
         for (x, y) in l:
@@ -241,7 +244,11 @@ class MainApplication(tk.Frame):
             # This is where we need to do math
             result = (int(self.x_e.get()) , int(self.y_e.get()))
         # This is where we output the g, h and f values out
-        self.canvas.itemconfigure(self.g_out, text=str(result))
+        x, y = self.x_e.get(), self.y_e.get()
+        x, y = int(x), int(y)
+        g_value = self.search.cost_from_start.get((x,y))
+        # print((int(self.x_e.get()), int(self.y_e.get())) in self.search.cost_from_start)
+        self.canvas.itemconfigure(self.g_out, text=str("%.2f" % g_value))
         self.canvas.itemconfigure(self.h_out, text=str(result))
         self.canvas.itemconfigure(self.f_out, text=str(result))
         # Might include a time output at some other time
