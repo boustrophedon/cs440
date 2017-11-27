@@ -10,6 +10,15 @@ HTT='2'
 HIGHWAY='a'
 HTT_HIGHWAY='b'
 
+OFFSETS = [(1, 1),
+           (1, -1),
+           (1, 0),
+           (-1, 1),
+           (-1, -1),
+           (-1, 0),
+           (0, 1),
+           (0, -1)]
+
 def tadd(t1, t2):
     """ Add coordinate tuples pointwise """
     return (t1[0] + t2[0], t1[1] + t2[1])
@@ -100,9 +109,7 @@ class NavigationGrid:
 
     def neighbors_with_costs(self, p):
         """ Returns a list of neighbors of the point with the costs to move to that point """
-        ncosts = list()
-        for p2 in self.neighbors(p):
-            ncosts.append((p2, self.cost(p, p2)))
+        ncosts = [(p2, self.cost(p, p2)) for p2 in self.neighbors(p)]
 
         return ncosts
 
@@ -112,19 +119,12 @@ class NavigationGrid:
 
         neighbors = list()
 
-        offsets = [(1, 1),
-                   (1, -1),
-                   (1, 0),
-                   (-1, 1),
-                   (-1, -1),
-                   (-1, 0),
-                   (0, 1),
-                   (0, -1)]
+        for x in OFFSETS:
+            n = tadd(p,x)
+            if self.is_inside(n):
+                neighbors.append(n)
 
-        for x in offsets:
-            neighbors.append(tadd(p,x))
-
-        return list(filter(self.is_inside, neighbors))
+        return neighbors
 
     def cost(self, p1, p2):
         """ p1, p2 are points in the grid, which must be neighboring. Returns
