@@ -46,7 +46,7 @@ class MainApplication(tk.Frame):
         self.nav_grid = GridGenerator().gen_grid()
         #<create the rest of your GUI here>
         self.canvas = tk.Canvas(self.parent, width=966 + 300, height=742)
-        customFont = tkFont.Font(family="Monaco", size=20)
+        customFont = tkFont.Font(family="Monaco", size=18)
         timeFont = tkFont.Font(family="Monaco", size=10)
 
         self.canvas.pack()
@@ -76,6 +76,22 @@ class MainApplication(tk.Frame):
                                       command=lambda: self.illustrate_path(3, float(self.weight_e.get())))#, weight=5))
         wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
         self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
+
+        # Sequential A-star button
+        seq_a_start_button = tk.Button(self.canvas, text="Sequential A* Search",
+                                       command=lambda: self.illustrate_path(4,float(self.w1_e.get()), float(self.w2_e.get())))
+        seq_a_start_button.place(x=1030, y=80 + 60 + 80 - 10)
+        w1_var = StringVar()
+        w1_var.set("1")
+        self.w1_e = tk.Entry(self.canvas, width=6, textvariable=w1_var)
+        self.w1_e.place(x=1080 - 20 - 30, y=120 + 80 + 50)
+        w2_var = StringVar()
+        w2_var.set("1")
+        self.w2_e = tk.Entry(self.canvas, width=6, textvariable=w1_var)
+        self.w2_e.place(x=1080 + 50 + 20, y=250)
+        self.canvas.create_text(1000, 260, text="w1:", font=customFont)
+        self.canvas.create_text(1000 + 120, 260, text="w2:", font=customFont)
+
 
         # Heuristic spinbox
         self.heuristic_spinbox = Spinbox(self.canvas, values=('Manhattan',
@@ -221,6 +237,10 @@ class MainApplication(tk.Frame):
                 self.search = GraphSearch(self.nav_grid, heuristic=chebyshev_admissible, weight=vargs[1])
             else:
                 self.search = GraphSearch(self.nav_grid, heuristic=empty_heuristic)
+        elif vargs[0] is 4:
+            print("Sequential A* Search\nw1 := " + str(vargs[1]) + ", w2 := " + str(vargs[2]))
+            self.search = SequentialSearch(self.nav_grid, w1=vargs[1], w2=vargs[2])
+
         if self.search is None:
             return
         time_elapsed = time.time()
