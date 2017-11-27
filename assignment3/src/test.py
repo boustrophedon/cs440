@@ -2,6 +2,7 @@ from grid_gui import run_gui
 from grid_generator import GridGenerator
 from navigation_grid import *
 from graph_search import *
+from sequential_search import *
 
 # no testing framework because idgaf and initially this didn't have actual real
 # tests
@@ -185,6 +186,41 @@ def test_chebyshev_heuristic():
 
     print("Test passed")
 
+def test_sequential_search():
+    print("Test sequential search")
+
+    grid = GridGenerator(width=120, height=100).gen_grid()
+
+    search_ucs = GraphSearch(grid)
+    search_seq = SequentialSearch(grid, 1, 1) # this should be equivalent to ucs
+
+    result_seq = search_seq.search()
+    result_ucs = search_ucs.search()
+
+    seq_cost = grid.path_cost(result_seq)
+    ucs_cost = grid.path_cost(result_ucs)
+    assert(ucs_cost == seq_cost)
+    print("Test passed")
+
+def test_sequential_weights():
+    print("Test sequential weights")
+
+    grid = GridGenerator(width=120, height=100).gen_grid()
+
+    search_ucs = GraphSearch(grid)
+    search_seq = SequentialSearch(grid, 1.25, 2)
+
+    result_seq = search_seq.search()
+    result_ucs = search_ucs.search()
+
+    seq_cost = grid.path_cost(result_seq)
+    ucs_cost = grid.path_cost(result_ucs)
+    assert(ucs_cost <= seq_cost)
+
+    if ucs_cost == seq_cost:
+        print("Costs were equal, this is fine. If this occurs every time something is wrong.")
+    print("Test passed")
+
 if __name__ == '__main__':
     test_search_nopath()
     print()
@@ -201,4 +237,8 @@ if __name__ == '__main__':
     test_weighted_a_star()
     print()
     test_chebyshev_heuristic()
+    print()
+    test_sequential_search()
+    print()
+    test_sequential_weights()
     print()
