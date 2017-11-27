@@ -6,6 +6,8 @@ import time
 
 from grid_generator import *
 from graph_search import *
+from sequential_search import *
+
 
 square_size = 6
 
@@ -34,6 +36,8 @@ white='#ffffff'
 yellow = '#ffe247'
 yellow_see_doctor = '#967f00'
 
+adjustment_seq = 75
+
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -47,18 +51,13 @@ class MainApplication(tk.Frame):
 
         self.canvas.pack()
 
-        self.canvas.create_text(1000 + 50 + 40, 80 + 200, text="h:\ng:\nf:", font=customFont)
-        self.h_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 52 + 200, text="", font=customFont)
-        self.g_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 81 + 200, text="", font=customFont)
-        self.f_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 107 + 200, text="", font=customFont)
-
         # Taking in x and y coordinates for the grid
-        self.canvas.create_text(1000, 150 + 200, text="x:", font=customFont)
+        self.canvas.create_text(1000, 150 + 200 + adjustment_seq, text="x:", font=customFont)
         self.x_e = tk.Entry(self.canvas, width=8)
-        self.x_e.place(x=1000 + 20, y=150 - 10 + 200)
-        self.canvas.create_text(1000 + 145, 150 + 200, text="y:", font=customFont)
+        self.x_e.place(x=1000 + 20, y=150 - 10 + 200 + adjustment_seq)
+        self.canvas.create_text(1000 + 145, 150 + 200 + adjustment_seq, text="y:", font=customFont)
         self.y_e = tk.Entry(self.canvas, width=8)
-        self.y_e.place(x=1000 + 165, y=150 - 10 + 200)
+        self.y_e.place(x=1000 + 165, y=150 - 10 + 200 + adjustment_seq)
 
         # Uniform cost search button
         ufc_button = tk.Button(self.canvas, text="Uniform-Cost Search", command=lambda: self.illustrate_path(1))
@@ -78,32 +77,44 @@ class MainApplication(tk.Frame):
         wtd_a_star_button.place(x=1000 + 20 + 10, y=80)
         self.canvas.create_text(1000 - 20 + 40 + 40, 120+10, text="w:", font=customFont)
 
-
-        # Calculate button
-        #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
-        calc_button = tk.Button(self.canvas, text="Calculate", command=self.calculate)
-
-        calc_button.place(x=1080, y=200 + 200)
-
-        # Open file button
-        #open_button = tk.Button(self.canvas, height=5, width=20, text="Open file", command=self.open_file)
-        open_button = tk.Button(self.canvas, text="Open file", command=self.open_file)
-        open_button.place(x=1080, y=200 + 60 + 200)
-
-        # Save file button
-        save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
-        save_button.place(x=1080, y=200 + 90 + 30 + 200)
-
+        # Heuristic spinbox
         self.heuristic_spinbox = Spinbox(self.canvas, values=('Manhattan',
                                                               'Distance squared',
                                                               'Euclidean',
                                                               'Euclidean (admissible)',
                                                               'Chebyshev',
                                                               'Chebyshev (admissible)'))
-        self.heuristic_spinbox.place(x=1080-40, y=170)
+        self.heuristic_spinbox.place(x=1080 - 40, y=170)
 
+        # Displaying the f, g and h values
+        self.canvas.create_text(1000 + 50 + 40, 80 + 200 + adjustment_seq, text="h:\ng:\nf:", font=customFont)
+        self.h_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 52 + 200 + adjustment_seq, text="",
+                                             font=customFont)
+        self.g_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 81 + 200 + adjustment_seq, text="",
+                                             font=customFont)
+        self.f_out = self.canvas.create_text(1000 + 80 + 40 + 20 + 20, 107 + 200 + adjustment_seq, text="",
+                                             font=customFont)
+
+        # Calculate button
+        #calc_button = tk.Button(self.canvas, height=5, width=20, text="Calculate", command=self.calculate)
+        calc_button = tk.Button(self.canvas, text="Calculate", command=self.calculate)
+        calc_button.place(x=1080, y=200 + 200 + adjustment_seq)
+
+
+
+        # Open file button
+        #open_button = tk.Button(self.canvas, height=5, width=20, text="Open file", command=self.open_file)
+        open_button = tk.Button(self.canvas, text="Open file", command=self.open_file)
+        open_button.place(x=1080, y=200 + 60 + 200 + adjustment_seq)
+
+        # Save file button
+        save_button = tk.Button(self.canvas, text="Save file", command=self.save_file)
+        save_button.place(x=1080, y=200 + 90 + 30 + 200 + adjustment_seq)
+
+        # Holding onto the current search being displayed
         self.search = None
 
+        # Showing how long each search took
         self.canvas.create_text(1050 + 20, 400 + 200 + 50 + 50, text="Time elapsed:", font=timeFont)
         self.time = self.canvas.create_text(1070 + 30 + 20 + 50, 400 + 250 + 50, text="", font=timeFont)
 
