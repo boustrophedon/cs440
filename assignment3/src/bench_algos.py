@@ -59,6 +59,7 @@ def main():
 
     with open('data/bench_data.csv', 'w', newline='') as output:
         bench_out = csv.DictWriter(output, fieldnames=fields)
+        bench_out.writeheader()
         for d in data:
             bench_out.writerow(d)
 
