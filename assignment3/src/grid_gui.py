@@ -43,6 +43,7 @@ class MainApplication(tk.Frame):
         #<create the rest of your GUI here>
         self.canvas = tk.Canvas(self.parent, width=966 + 300, height=742)
         customFont = tkFont.Font(family="Monaco", size=20)
+        timeFont = tkFont.Font(family="Monaco", size=10)
 
         self.canvas.pack()
 
@@ -103,8 +104,8 @@ class MainApplication(tk.Frame):
 
         self.search = None
 
-        self.canvas.create_text(1050 + 20, 400 + 200, text="Time elapsed:", font=customFont)
-        self.time = self.canvas.create_text(1070, 400 + 250, text="", font=customFont)
+        self.canvas.create_text(1050 + 20, 400 + 200 + 50 + 50, text="Time elapsed:", font=timeFont)
+        self.time = self.canvas.create_text(1070 + 30 + 20 + 50, 400 + 250 + 50, text="", font=timeFont)
 
         self.refresh()
 
